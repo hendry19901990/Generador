@@ -1,7 +1,6 @@
 package com.extjs.generador;
 
 import com.extjs.generador.ColumnType;
-import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UtilDatabase {
+	
     private static final String DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
     private static final String DB_CONNECTION = "jdbc:oracle:thin:@10.0.0.94:1521:KPITALUP";
     private static final String DB_USER = "genesis";

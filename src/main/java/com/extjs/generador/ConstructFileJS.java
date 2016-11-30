@@ -1,6 +1,7 @@
 package com.extjs.generador;
 
 import com.extjs.generador.ColumnType;
+
 import java.util.List;
 
 public class ConstructFileJS {
@@ -42,11 +43,12 @@ public class ConstructFileJS {
         return contenido.toString();
     }
 
-    public static String createStore(String modulo, String fileTocreate) {
+    public static String createStore(String modulo, String fileTocreate, String servicio) {
         
     	StringBuffer contenido = new StringBuffer();
         String storeName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Store";
         String modelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
+        String tablaName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         
         contenido.append("Ext.define('" + modulo + ".store." + storeName + "', {");
         contenido.append("\n\t extend: 'Ext.data.Store', ");
@@ -56,9 +58,10 @@ public class ConstructFileJS {
         contenido.append("\n\t storeId: '" + storeName + "', ");
         contenido.append("\n\t pageSize:60, \n\t autoLoad: true,");
         contenido.append("\n\n \t  proxy: { ");
-        contenido.append("\n \t\t type: 'ajax', \n \t\t  url : '',");
+        contenido.append("\n \t\t type: 'ajax', \n \t\t  url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/listAll',");
         contenido.append(" \n \t\t reader: { ");
-        contenido.append("\n \t\t\t type: 'json', \n \t\t\t root: 'root' ");
+        contenido.append("\n \t\t\t type: 'json'");
+        //contenido.append("\n \t\t\t type: 'json', \n \t\t\t root: 'root' ");
         contenido.append("\n \t\t } ");
         contenido.append("\n \t } ");
         contenido.append("\n\n});");
@@ -238,7 +241,7 @@ public class ConstructFileJS {
         return contenido.toString();
     }
 
-    public static String createViewController(String modulo, String fileTocreate, List<ColumnType> list, String prefix) {
+    public static String createViewController(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
     	
         StringBuffer contenido = new StringBuffer();
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
@@ -246,6 +249,7 @@ public class ConstructFileJS {
         String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         String modelName = modulo + ".model." + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
         String storeNameVar = "store" + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
+        String tablaName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "', {");
         contenido.append("\n \t extend: 'Ext.app.ViewController', ");
@@ -270,7 +274,7 @@ public class ConstructFileJS {
         
         contenido.append("\n\n\t onDeleteRow: function(grid, rowIndex, colIndex) {  ");
         contenido.append("\n\t\t Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url: 'http://10.0.0.131/Genadmin/gmatablas/delete',  \n\t\t\t method: 'DELETE',");
+        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t method: 'DELETE',");
         contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params: record,  ");
         contenido.append("\n\t\t\t success: function(resp) { grid.getStore().load(); }, ");
         contenido.append("\n\t\t\t failure: function(response, opt) {  Ext.Msg.alert('Error', response.status);   } ");
@@ -282,7 +286,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t  var form = button.up('form').getForm();");
         contenido.append("\n\n\t\t if (form.isValid()) {");
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url :'http://10.0.0.131/Genadmin/gmatablas/insert', \n\t\t method: 'POST',");
+        contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t method: 'POST',");
         contenido.append("\n\t\t\t  headers: {'Content-Type' : 'application/json' }, \n\t\t params:  Ext.encode(form.getValues()), ");
         contenido.append("\n\t\t\t success: function(form, action) {     ");
         contenido.append("\n\t\t\t\t Ext.Msg.alert('Notificacion', 'Se Guardo Satisfactoriamente');");

@@ -14,7 +14,9 @@ import java.util.regex.Pattern;
 
 public class Generafile {
 	
-    public static void createAllfiles(String artifactoID, String tabla, String directorioDestino, boolean createStore, boolean createController, boolean createViewModel, boolean createViewController, boolean createGridPanel, List<ColumnType> listColumnTypes) {
+    public static void createAllfiles(String artifactoID, String tabla, String directorioDestino, 
+    		boolean createStore, boolean createController, boolean createViewModel,
+    		boolean createViewController, boolean createGridPanel, List<ColumnType> listColumnTypes, String servicio) {
        
     	Pattern p = Pattern.compile("[a-zA-Z]+[_][a-zA-Z]+");
         Matcher m = p.matcher(tabla);
@@ -48,7 +50,7 @@ public class Generafile {
                 }
                 
                 Generafile.createModelFile(artifactoID, folderModel.getAbsolutePath(), modulo, listColumnTypes);
-                Generafile.createStoreFile(artifactoID, folderStore.getAbsolutePath(), modulo);
+                Generafile.createStoreFile(artifactoID, folderStore.getAbsolutePath(), modulo, servicio);
             }
             
             if (createController) {
@@ -101,7 +103,7 @@ public class Generafile {
                     folderViewController.mkdir();
                 }
                 
-                Generafile.createViewControllerFile(artifactoID, folderViewController.getAbsolutePath(), modulo, listColumnTypes, prefix.toLowerCase());
+                Generafile.createViewControllerFile(artifactoID, folderViewController.getAbsolutePath(), modulo, listColumnTypes, prefix.toLowerCase(), servicio);
             }
             
             if (createGridPanel) {
@@ -205,9 +207,9 @@ public class Generafile {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private static void createStoreFile(String modulo, String destino, String fileTocreate) {
+    private static void createStoreFile(String modulo, String destino, String fileTocreate, String servicio) {
     	
-        String contentFile = ConstructFileJS.createStore(modulo, fileTocreate);
+        String contentFile = ConstructFileJS.createStore(modulo, fileTocreate, servicio);
         OutputStreamWriter fichero = null;
         PrintWriter pw = null;
         
@@ -298,9 +300,9 @@ public class Generafile {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private static void createViewControllerFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix) {
+    private static void createViewControllerFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
     	
-        String contentFile = ConstructFileJS.createViewController(modulo, fileTocreate, list, prefix);
+        String contentFile = ConstructFileJS.createViewController(modulo, fileTocreate, list, prefix, servicio);
         OutputStreamWriter fichero = null;
         PrintWriter pw = null;
         
