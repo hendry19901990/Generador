@@ -1,13 +1,16 @@
 package com.extjs.generador;
 
 import com.extjs.generador.ColumnType;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +56,8 @@ public class UtilDatabase {
     }
 
     public static List<ColumnType> getListColumnTypes(String tabla) {
-        ArrayList<ColumnType> list = null;
+    	List<ColumnType> list = null;
+    	List<ColumnType> listResult = null;
         Connection dbConnection = null;
         Statement statement = null;
         String selectTableSQL = "select COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_SCALE, NULLABLE from ALL_TAB_COLUMNS where TABLE_NAME = upper('" + tabla + "')";
@@ -76,7 +80,7 @@ public class UtilDatabase {
                 int data_scale = data_scaleString != null ? Integer.parseInt(data_scaleString) : 0;
                 String nullable = rs.getString("NULLABLE");
                 boolean isnull = !nullable.equalsIgnoreCase("N") && !nullable.contains("N");
-                ColumnType columnType = new ColumnType(name, type, data_length, data_scale, isnull);
+                ColumnType columnType = new ColumnType(name, type, data_length, data_scale, isnull, false);
                 list.add(columnType);
             }
             if (statement != null) {
@@ -90,7 +94,89 @@ public class UtilDatabase {
             list = null;
             System.out.println(e.getMessage());
         }
+        
+        listResult = getListColumnTypesWithPrimaryKey(list, tabla);
+        
+        return listResult;
+    }
+    
+    private static List<ColumnType> getListColumnTypesWithPrimaryKey(List<ColumnType> lista, String tabla) {
+    	
+    	if(lista == null || lista.size()==0){
+    		return null;
+    	}else{
+    		
+    		Map<String,ColumnType> existenteLista = new HashMap<String,ColumnType>();
+    		
+    		for(ColumnType col : lista)
+    			existenteLista.put(col.getName(), col);
+    		
+    		List<ColumnType> listPK = getListPrimaryKey(tabla);
+    		
+    		if(listPK != null){
+    			
+    			for(ColumnType col : listPK){
+    				
+    				if(existenteLista.containsKey(col.getName())){
+    					ColumnType colAUX = existenteLista.get(col.getName());
+    					colAUX.setIsprimarykey(true);
+    					existenteLista.put(col.getName(), colAUX);
+    					break;
+    				}
+    				
+    			}
+    			
+    		}
+    		
+        	List<ColumnType> list = new ArrayList<ColumnType>(existenteLista.values()); 
+        	
+        	return list;
+    		
+    	}
+    	
+
+    }
+    
+    private static List<ColumnType> getListPrimaryKey(String tabla) {
+    	
+    	List<ColumnType> list = null;
+        Connection dbConnection = null;
+        Statement statement = null;
+        String selectTableSQL = " SELECT cols.table_name, cols.column_name column_name, cols.position, cons.status, cons.owner ";
+        selectTableSQL += " FROM all_constraints cons, all_cons_columns cols WHERE cons.constraint_type = 'P' AND cons.constraint_name = cols.constraint_name ";
+        selectTableSQL += " AND cons.owner = cols.owner AND cols.table_name= '" + tabla.toUpperCase() + "' ";
+        selectTableSQL += " ORDER BY cols.table_name, cols.position ";
+        
+        try {
+            dbConnection = UtilDatabase.getDBConnection();
+            if (dbConnection == null) {
+                return null;
+            }
+            statement = dbConnection.createStatement();
+            ResultSet rs = statement.executeQuery(selectTableSQL);
+            while (rs.next()) {
+                if (list == null) {
+                    list = new ArrayList<ColumnType>();
+                }
+                String name = rs.getString("column_name");
+                boolean isnull = false;
+                ColumnType columnType = new ColumnType(name, null, 0, 0, isnull, true);
+                list.add(columnType);
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (dbConnection != null) {
+                dbConnection.close();
+            }
+        }
+        catch (SQLException e) {
+            list = null;
+            System.out.println(e.getMessage());
+        }
+        
         return list;
+    	
     }
 
     private static Connection getDBConnection() {

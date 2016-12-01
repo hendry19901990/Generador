@@ -158,19 +158,45 @@ public class ConstructFileJS {
         contenido.append("\n \t extend: 'Ext.grid.Panel', ");
         contenido.append("\n \t xtype: '" + gridPanelName + "', ");
         contenido.append("\n\n\t requires: [ ");
+        contenido.append("\n\t\t'Ext.grid.filters.Filters','Ext.grid.*','Ext.toolbar.Paging', 'Ext.data.*',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
         contenido.append("\n\t ],");
-        contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
-        contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
+       // contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
+       // contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
+        contenido.append("\n\t plugins: 'gridfilters',");
         contenido.append("\n \t title: '" + gridPanelName + "', ");
         contenido.append("\n \t bind: {   store: '{" + storeRequire + "}' }, ");
         contenido.append("\n \t columns: [  ");
         
         if (list != null) {
+        	int i=0;
             for (ColumnType columna : list) {
-                contenido.append("\n \t\t {text:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "', dataIndex:'" + columna.getName() + "', flex: 1},");
+            	
+            	String filter = "";
+            	
+            	if (columna.getType().equalsIgnoreCase("NUMBER") || columna.getType().equalsIgnoreCase("FLOAT") ||
+                		columna.getType().equalsIgnoreCase("DECIMAL") || columna.getType().equalsIgnoreCase("Floating-Point") || 
+                		columna.getType().equalsIgnoreCase("BINARY_FLOAT") || columna.getType().equalsIgnoreCase("BINARY_DOUBLE")) {
+                   
+            		filter = "filter: 'number',";
+                	
+                } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || 
+                		columna.getType().equalsIgnoreCase("DATE")) {
+                    
+                	filter = "xtype: 'datecolumn',";
+                	
+                }
+            	
+                contenido.append("\n \t\t {"+filter+"text:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "', dataIndex:'" + columna.getName() + "', flex: 1}");
+                
+                if(i < list.size()-1)
+                	contenido.append(",");
+                
+                i++;
             }
+            
+            /*
             contenido.append("\n \t\t {");
             contenido.append("\n \t\t\t xtype:'actioncolumn', ");
             contenido.append("\n \t\t\t flex: 1, ");
@@ -182,12 +208,18 @@ public class ConstructFileJS {
             contenido.append("\n \t\t\t\t handler: 'onDeleteRow' ");
             contenido.append("\n \t\t\t }] ");
             contenido.append("\n \t\t }");
+            */
         }
         
         contenido.append("\n \t ], ");
         contenido.append("\n \t tbar: [  ");
         contenido.append("\n\t\t { text:'Agregar', listeners:{ click:'newRecord'} } ");
         contenido.append("\n \t ], ");
+        
+        contenido.append("\n \t bbar: {  ");
+        contenido.append("\n\t\t  xtype: 'pagingtoolbar', \n\t\t pageSize: 10, \n\t\t displayInfo: true,\n\t\t bind:{ store: '{" + storeRequire + "}' }");
+        contenido.append("\n \t }, ");
+        
         contenido.append("\n\t listeners: {  itemdblclick: 'onItemSelected' } ");
         contenido.append("\n});");
         
@@ -198,12 +230,22 @@ public class ConstructFileJS {
     	
         StringBuffer contenido = new StringBuffer();
         String formularioName = fileTocreate + "window";
+        String formularioTitle = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         int heightWindow = list != null ? (list.size() + 1) * 50 : 0;
+        String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
+        String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
+        
         
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + formularioName + "', {");
         contenido.append("\n \t extend: 'Ext.window.Window', ");
         contenido.append("\n \t alias: 'widget." + formularioName + "', ");
-        contenido.append("\n\t title: 'Formulario', \n\t width: 400, \n\t height: " + heightWindow + ", ");
+        contenido.append("\n\t title: '"+formularioTitle+"', \n\t width: 400, \n\t height: " + heightWindow + ", ");
+        contenido.append("\n\n\t requires: [ ");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
+        contenido.append("\n\t ],");
+        contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
+        contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
         contenido.append("\n\n\t items: [ \n\t{");
         contenido.append("\n\t\t xtype: 'form',");
         contenido.append("\n\t\t bodyPadding: 10,");
@@ -219,17 +261,35 @@ public class ConstructFileJS {
                 } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || columna.getType().equalsIgnoreCase("DATE")) {
                     tipo = "'datefield'";
                 }
-                contenido.append("\n \t\t\t {name:'" + columna.getName() + "', allowBlank:" + columna.isIsnull() + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'}, ");
+                
+                if(columna.isIsprimarykey()){
+                	
+                	String blanco =  ", disabled: true";
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "', hidden: true, xtype:" + tipo + "}, ");
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() +"_pk'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'}, ");
+                    
+                	
+                }else{
+               
+                	String blanco = (columna.isIsnull())?  " " : ", allowBlank:false, blankText:'Este Campo es Obligatorio'";
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'}, ");
+                
+                }
             }
             contenido.append("\n\n \t\t\t {");
             contenido.append("\n\t\t\t\t xtype: 'button',");
-            contenido.append("\n\t\t\t\t text: 'Guardar',");
-            contenido.append("\n \t\t\t\t listeners: { click: 'onSave'  }");
+            contenido.append("\n\t\t\t\t text: 'Cancelar',");
+            contenido.append("\n \t\t\t\t listeners: { click: 'onReset'  }");
+            contenido.append("\n \t\t\t },");
+            contenido.append("\n\n \t\t\t {");
+            contenido.append("\n\t\t\t\t xtype: 'button',");
+            contenido.append("\n\t\t\t\t text: 'Anular',");
+            contenido.append("\n \t\t\t\t listeners: { click: 'onDeleteRow'  }");
             contenido.append("\n \t\t\t },");
             contenido.append("\n \t\t\t {");
             contenido.append("\n \t\t\t\t  xtype: 'button',");
-            contenido.append("\n \t\t\t\t  text: 'Cancelar',");
-            contenido.append("\n \t\t\t\t  listeners: { click: 'onReset'  }");
+            contenido.append("\n \t\t\t\t  text: 'Guardar',");
+            contenido.append("\n \t\t\t\t  listeners: { click: 'onSave'  }");
             contenido.append("\n \t\t\t }");
         }
         
@@ -257,6 +317,22 @@ public class ConstructFileJS {
         contenido.append("\n\n\t newRecord: function(){ ");
         contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
         contenido.append("\n\t\t ventana.controller = this;");
+        
+        String recordToNew = "";
+        String recordToDel = "";
+        for(ColumnType col : list){
+        	
+        	if(col.isIsprimarykey()){
+        		recordToNew = col.getName() + " : 0";
+        		recordToDel = col.getName() + " : form.findField('"+col.getName()+"').getValue()";
+        		break;
+        	}
+        	
+        }
+        
+        
+        contenido.append("\n\t\t var record = Ext.create('"+modelName+"',{"+recordToNew+"}); ");
+        contenido.append("\n\t\t ventana.down('form').getForm().loadRecord(record); ");
         contenido.append("\n\t\t ventana.show(); ");
         contenido.append("\n\t }, ");
         
@@ -272,11 +348,13 @@ public class ConstructFileJS {
         contenido.append("\n\t\t button.up('form').up('window').hide();");
         contenido.append("\n\t }, ");
         
-        contenido.append("\n\n\t onDeleteRow: function(grid, rowIndex, colIndex) {  ");
-        contenido.append("\n\t\t Ext.Ajax.request({ ");
+        contenido.append("\n\n\t onDeleteRow: function(button, e, eOpts) {  ");
+        contenido.append("\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
+        contenido.append("\n\t\t  var form = button.up('form').getForm();");
+        contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t method: 'DELETE',");
-        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params: record,  ");
-        contenido.append("\n\t\t\t success: function(resp) { grid.getStore().load(); }, ");
+        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params: {"+recordToDel+"},  ");
+        contenido.append("\n\t\t\t success: function(resp) { " + storeNameVar + ".load(); }, ");
         contenido.append("\n\t\t\t failure: function(response, opt) {  Ext.Msg.alert('Error', response.status);   } ");
         contenido.append("\n\t\t });");
         contenido.append("\n\t }, ");

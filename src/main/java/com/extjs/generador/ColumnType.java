@@ -6,16 +6,18 @@ public class ColumnType {
     private int data_length;
     private int data_scale;
     private boolean isnull;
+    private boolean isprimarykey;
 
     public ColumnType() {
     }
 
-    public ColumnType(String name, String type, int data_length, int data_scale, boolean isnull) {
+    public ColumnType(String name, String type, int data_length, int data_scale, boolean isnull, boolean isprimarykey) {
         this.name = name.toLowerCase();
         this.type = type;
         this.data_length = data_length;
         this.data_scale = data_scale;
         this.isnull = isnull;
+        this.isprimarykey = isprimarykey;
     }
 
     public boolean isIsnull() {
@@ -53,8 +55,17 @@ public class ColumnType {
     public void setData_scale(int data_scale) {
         this.data_scale = data_scale;
     }
+    
 
-    public String toString() {
+    public boolean isIsprimarykey() {
+		return isprimarykey;
+	}
+
+	public void setIsprimarykey(boolean isprimarykey) {
+		this.isprimarykey = isprimarykey;
+	}
+
+	public String toString() {
         StringBuffer allCadena = new StringBuffer();
         allCadena.append("{");
         allCadena.append(" name: '" + this.name + "',");
