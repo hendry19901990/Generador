@@ -166,14 +166,17 @@ public class ConstructFileJS {
         contenido.append("\n \t extend: 'Ext.grid.Panel', ");
         contenido.append("\n \t xtype: '" + gridPanelName + "', ");
         contenido.append("\n\n\t requires: [ ");
-        contenido.append("\n\t\t'Ext.grid.filters.Filters','Ext.grid.*','Ext.toolbar.Paging', 'Ext.data.*',");
+        contenido.append("\n\t\t 'Ext.data.*',");
+        contenido.append("\n\t\t 'Ext.grid.*',");
+        contenido.append("\n\t\t 'Ext.util.*',");
+        contenido.append("\n\t\t 'Ext.grid.filters.Filters', 'Ext.toolbar.Paging',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
         contenido.append("\n\t ],");
-       // contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
-       // contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
+        contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
+        contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
         contenido.append("\n\t plugins: 'gridfilters',");
-        contenido.append("\n \t title: '" + gridPanelName + "', ");
+        //contenido.append("\n \t title: '" + gridPanelName + "', ");
         contenido.append("\n \t bind: {   store: '{" + storeRequire + "}' }, ");
         contenido.append("\n \t columns: [  ");
         
@@ -187,12 +190,12 @@ public class ConstructFileJS {
                 		columna.getType().equalsIgnoreCase("DECIMAL") || columna.getType().equalsIgnoreCase("Floating-Point") || 
                 		columna.getType().equalsIgnoreCase("BINARY_FLOAT") || columna.getType().equalsIgnoreCase("BINARY_DOUBLE")) {
                    
-            		filter = "filter: 'number',";
+            		filter = "filter: 'number', filter: true ,";
                 	
                 } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || 
                 		columna.getType().equalsIgnoreCase("DATE")) {
                     
-                	filter = "xtype: 'datecolumn',";
+                	filter = "xtype: 'datecolumn', filter: true ,";
                 	
                 }
             	
@@ -225,7 +228,7 @@ public class ConstructFileJS {
         contenido.append("\n \t ], ");
         
         contenido.append("\n \t bbar: {  ");
-        contenido.append("\n\t\t  xtype: 'pagingtoolbar', \n\t\t pageSize: 10, \n\t\t displayInfo: true,\n\t\t bind:{ store: '{" + storeRequire + "}' }");
+        contenido.append("\n\t\t xtype: 'pagingtoolbar', \n\t\t pageSize: 10, \n\t\t displayInfo: true,\n\t\t bind:{ store: '{" + storeRequire + "}' }");
         contenido.append("\n \t }, ");
         
         contenido.append("\n\t listeners: {  itemdblclick: 'onItemSelected' } ");
@@ -386,7 +389,7 @@ public class ConstructFileJS {
         contenido.append("\n\n\t\t if (form.isValid()) {");
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t\t method: 'POST',");
-        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t params:  Ext.encode(form.getValues()), ");
+        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params:  Ext.encode(form.getValues()), ");
         contenido.append("\n\t\t\t success: function(form, action) {     ");
         contenido.append("\n\t\t\t\t Ext.Msg.alert('Notificacion', 'Se Guardo Satisfactoriamente');");
         contenido.append("\n\t\t\t\t button.up('form').up('window').hide();");
