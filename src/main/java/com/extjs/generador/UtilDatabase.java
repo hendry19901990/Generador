@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,6 +131,20 @@ public class UtilDatabase {
     		}
     		
         	List<ColumnType> list = new ArrayList<ColumnType>(existenteLista.values()); 
+        	
+        	Collections.sort(list, new Comparator<ColumnType>() {
+        		
+        		public int compare(ColumnType colA, ColumnType colB) {
+        			
+        			if(colA.isIsprimarykey()){
+        				return -1;
+        			}else{
+        				return 1;
+        			}
+        			
+        		}
+        		
+        	});
         	
         	return list;
     		

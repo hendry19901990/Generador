@@ -101,11 +101,19 @@ public class ConstructFileJS {
                 	
                 }
                 
-                contenido.append("\n \t\t {name:'" + columna.getName() + "',type:" + tipo + ", mapping:'" + columna.getName() + "'}");
+                if(columna.isIsprimarykey()){
+                	contenido.append("\n \t\t {name:'" + columna.getName() + "_pk', type:" + tipo + 
+                			", convert: function(v,record){return record.data."+columna.getName()+";} },");
+                }
                 
-                if (i < list.size() - 1) {
+                contenido.append("\n \t\t {name:'" + columna.getName() + "', type:" + tipo + ", mapping:'" + columna.getName() + "'}");
+                
+                if (i < (list.size()-1)) {
                     contenido.append(",");
                 }
+                
+
+                
                 ++i;
             }
         }
@@ -252,6 +260,7 @@ public class ConstructFileJS {
         
         contenido.append("\n\t\t items:[ ");
         if (list != null) {
+        	int i=0;
             for (ColumnType columna : list) {
                 String tipo = "'textfield'";
                 if (columna.getType().equalsIgnoreCase("VARCHAR2") || columna.getType().equalsIgnoreCase("VARCHAR") || columna.getType().equalsIgnoreCase("CHAR") || columna.getType().equalsIgnoreCase("NCHAR") || columna.getType().equalsIgnoreCase("NVARCHAR2") || columna.getType().equalsIgnoreCase("LOB") || columna.getType().equalsIgnoreCase("LONG")) {
@@ -266,34 +275,44 @@ public class ConstructFileJS {
                 	
                 	String blanco =  ", disabled: true";
                 	contenido.append("\n \t\t\t {name:'" + columna.getName() + "', hidden: true, xtype:" + tipo + "}, ");
-                	contenido.append("\n \t\t\t {name:'" + columna.getName() +"_pk'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'}, ");
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() +"_pk'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'} ");
                     
                 	
                 }else{
                
                 	String blanco = (columna.isIsnull())?  " " : ", allowBlank:false, blankText:'Este Campo es Obligatorio'";
-                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'}, ");
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'} ");
                 
                 }
+                
+                if(i < list.size()-1)
+                	contenido.append(",");
             }
-            contenido.append("\n\n \t\t\t {");
-            contenido.append("\n\t\t\t\t xtype: 'button',");
-            contenido.append("\n\t\t\t\t text: 'Cancelar',");
-            contenido.append("\n \t\t\t\t listeners: { click: 'onReset'  }");
-            contenido.append("\n \t\t\t },");
-            contenido.append("\n\n \t\t\t {");
-            contenido.append("\n\t\t\t\t xtype: 'button',");
-            contenido.append("\n\t\t\t\t text: 'Anular',");
-            contenido.append("\n \t\t\t\t listeners: { click: 'onDeleteRow'  }");
-            contenido.append("\n \t\t\t },");
-            contenido.append("\n \t\t\t {");
-            contenido.append("\n \t\t\t\t  xtype: 'button',");
-            contenido.append("\n \t\t\t\t  text: 'Guardar',");
-            contenido.append("\n \t\t\t\t  listeners: { click: 'onSave'  }");
-            contenido.append("\n \t\t\t }");
+            
         }
         
-        contenido.append("\n\t\t ]\n\t\t}");
+        contenido.append("\n\t\t ], ");
+        
+        contenido.append("\n\t\t buttons:[ ");
+        contenido.append("\n\n \t\t\t {");
+        contenido.append("\n\t\t\t\t xtype: 'button',");
+        contenido.append("\n\t\t\t\t text: 'Cancelar',");
+        contenido.append("\n \t\t\t\t listeners: { click: 'onReset'  }, align: 'left'");
+        contenido.append("\n \t\t\t },");
+        contenido.append("\n\n \t\t\t {");
+        contenido.append("\n\t\t\t\t xtype: 'button',");
+        contenido.append("\n\t\t\t\t text: 'Anular',");
+        contenido.append("\n \t\t\t\t listeners: { click: 'onDeleteRow'  }, align: 'left'");
+        contenido.append("\n \t\t\t },");
+        contenido.append("\n \t\t\t  {xtype: 'spacer',width:60}, {xtype: 'spacer',width:60},");
+        contenido.append("\n \t\t\t {");
+        contenido.append("\n \t\t\t\t  xtype: 'button',");
+        contenido.append("\n \t\t\t\t  text: 'Guardar',");
+        contenido.append("\n \t\t\t\t  listeners: { click: 'onSave'  }, align: 'right'");
+        contenido.append("\n \t\t\t }");
+        contenido.append("\n\t\t ], ");
+        
+        contenido.append("\n\t\t}");
         
         contenido.append("\n\t ]");
         contenido.append("\n\n});");
@@ -364,8 +383,8 @@ public class ConstructFileJS {
         contenido.append("\n\t\t  var form = button.up('form').getForm();");
         contenido.append("\n\n\t\t if (form.isValid()) {");
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t method: 'POST',");
-        contenido.append("\n\t\t\t  headers: {'Content-Type' : 'application/json' }, \n\t\t params:  Ext.encode(form.getValues()), ");
+        contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t\t method: 'POST',");
+        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t params:  Ext.encode(form.getValues()), ");
         contenido.append("\n\t\t\t success: function(form, action) {     ");
         contenido.append("\n\t\t\t\t Ext.Msg.alert('Notificacion', 'Se Guardo Satisfactoriamente');");
         contenido.append("\n\t\t\t\t button.up('form').up('window').hide();");
