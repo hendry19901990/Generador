@@ -285,8 +285,10 @@ public class ConstructFileJS {
                 
                 }
                 
-                if(i < list.size()-1)
+                if(i < (list.size()-1))
                 	contenido.append(",");
+                
+                i++;
             }
             
         }
@@ -304,13 +306,13 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t text: 'Anular',");
         contenido.append("\n \t\t\t\t listeners: { click: 'onDeleteRow'  }, align: 'left'");
         contenido.append("\n \t\t\t },");
-        contenido.append("\n \t\t\t  {xtype: 'spacer',width:60}, {xtype: 'spacer',width:60},");
+        contenido.append("\n \t\t\t  {xtype: 'tbspacer',width:60}, {xtype: 'tbspacer',width:60},");
         contenido.append("\n \t\t\t {");
         contenido.append("\n \t\t\t\t  xtype: 'button',");
         contenido.append("\n \t\t\t\t  text: 'Guardar',");
         contenido.append("\n \t\t\t\t  listeners: { click: 'onSave'  }, align: 'right'");
         contenido.append("\n \t\t\t }");
-        contenido.append("\n\t\t ], ");
+        contenido.append("\n\t\t ] ");
         
         contenido.append("\n\t\t}");
         
