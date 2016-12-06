@@ -58,7 +58,7 @@ public class ConstructFileJS {
         contenido.append("\n\t storeId: '" + storeName + "', ");
         contenido.append("\n\t pageSize:60, \n\t autoLoad: true,");
         contenido.append("\n\n \t  proxy: { ");
-        contenido.append("\n \t\t type: 'ajax', \n \t\t  url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/listAll',");
+        contenido.append("\n \t\t type: 'ajax', \n \t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/listAll',");
         contenido.append(" \n \t\t reader: { ");
         contenido.append("\n \t\t\t type: 'json'");
         //contenido.append("\n \t\t\t type: 'json', \n \t\t\t root: 'root' ");
@@ -101,10 +101,11 @@ public class ConstructFileJS {
                 	
                 }
                 
+                /*
                 if(columna.isIsprimarykey()){
                 	contenido.append("\n \t\t {name:'" + columna.getName() + "_pk', type:" + tipo + 
                 			", convert: function(v,record){return record.data."+columna.getName()+";} },");
-                }
+                }*/
                 
                 contenido.append("\n \t\t {name:'" + columna.getName() + "', type:" + tipo + ", mapping:'" + columna.getName() + "'}");
                 
@@ -132,6 +133,7 @@ public class ConstructFileJS {
         String formularioName = fileTocreate + "window";
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
+        String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         
         contenido.append("Ext.define('" + modulo + ".view." + prefix + ".view." + widgetName + "', {");
         contenido.append("\n\t extend: 'Ext.panel.Panel',");
@@ -139,6 +141,8 @@ public class ConstructFileJS {
         contenido.append("\n\t id: '" + widgetName + "', ");
         
         contenido.append("\n\n\t requires: [ ");
+        contenido.append("\n\t\t 'Ext.toolbar.Paging',");
+        contenido.append("\n\t\t 'Ext.ux.ProgressBarPager',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "view" + "." + gridPanelName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "view" + "." + formularioName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
@@ -148,7 +152,24 @@ public class ConstructFileJS {
         contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
         contenido.append("\n\n\t width: 740, ");
-        contenido.append("\n\n\t items: [{ xtype: '" + gridPanelName + "'} ] ");
+        
+        
+        contenido.append("\n\n\t items: [{ xtype: '" + gridPanelName + "'} ], ");
+        
+        contenido.append("\n\n\t dockedItems: [{ ");
+        contenido.append("\n\t\t xtype: 'toolbar',");
+        contenido.append("\n\t\t dock: 'bottom',");
+        contenido.append("\n\t\t ui: 'footer',");
+        contenido.append("\n\t\t fixed: true,");
+        contenido.append("\n\t\t items: [{");
+        contenido.append("\n\t\t\t xtype: 'pagingtoolbar',");
+        contenido.append("\n\t\t\t pageSize: 10,");
+        contenido.append("\n\t\t\t displayInfo: true,");
+        contenido.append("\n\t\t\t bind:{ store: '{" + storeRequire + "}' },");
+        contenido.append("\n\t\t\t plugins: new Ext.ux.ProgressBarPager()");
+        contenido.append("\n\t\t }]");
+        contenido.append("\n\t }]");
+        
         contenido.append("\n});");
         
         return contenido.toString();
@@ -169,7 +190,8 @@ public class ConstructFileJS {
         contenido.append("\n\t\t 'Ext.data.*',");
         contenido.append("\n\t\t 'Ext.grid.*',");
         contenido.append("\n\t\t 'Ext.util.*',");
-        contenido.append("\n\t\t 'Ext.grid.filters.Filters', 'Ext.toolbar.Paging',");
+        contenido.append("\n\t\t 'Ext.grid.filters.Filters',");
+        contenido.append("\n\t\t 'Ext.toolbar.Paging',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
         contenido.append("\n\t ],");
@@ -190,16 +212,20 @@ public class ConstructFileJS {
                 		columna.getType().equalsIgnoreCase("DECIMAL") || columna.getType().equalsIgnoreCase("Floating-Point") || 
                 		columna.getType().equalsIgnoreCase("BINARY_FLOAT") || columna.getType().equalsIgnoreCase("BINARY_DOUBLE")) {
                    
-            		filter = "filter: 'number', filter: true ,";
+            		filter = "filter: 'number'";
                 	
                 } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || 
                 		columna.getType().equalsIgnoreCase("DATE")) {
                     
-                	filter = "xtype: 'datecolumn', filter: true ,";
+                	filter = "xtype: 'datecolumn', filter: true";
                 	
+                }else{
+                	filter = "filter: {type: 'string'}";
                 }
             	
-                contenido.append("\n \t\t {"+filter+"text:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "', dataIndex:'" + columna.getName() + "', flex: 1}");
+            	String texto = columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1);
+            	
+                contenido.append("\n \t\t {text:'"+texto+ "', "+filter+",dataIndex:'" + columna.getName() + "', flex: 1}");
                 
                 if(i < list.size()-1)
                 	contenido.append(",");
@@ -224,12 +250,23 @@ public class ConstructFileJS {
         
         contenido.append("\n \t ], ");
         contenido.append("\n \t tbar: [  ");
-        contenido.append("\n\t\t { text:'Agregar', listeners:{ click:'newRecord'} } ");
+        contenido.append("\n\t\t { ");
+        contenido.append("\n\t\t\t text:'Agregar',");
+        contenido.append("\n\t\t\t listeners:{ click:'newRecord'},");
+        contenido.append("\n\t\t\t iconCls : 'x-fa fa-plus-square-o'");
+        contenido.append("\n\t\t }, ");
+        contenido.append("\n\t\t  '->', ");
+        contenido.append("\n\t\t { ");
+        contenido.append("\n\t\t\t text: 'Exportar a Excel', ");
+        contenido.append("\n\t\t\t listeners : { click:'exportExcell'}, ");
+        contenido.append("\n\t\t\t iconCls : 'x-fa fa-file-excel-o' ");
+        contenido.append("\n\t\t } ");
         contenido.append("\n \t ], ");
         
+        /*
         contenido.append("\n \t bbar: {  ");
         contenido.append("\n\t\t xtype: 'pagingtoolbar', \n\t\t pageSize: 10, \n\t\t displayInfo: true,\n\t\t bind:{ store: '{" + storeRequire + "}' }");
-        contenido.append("\n \t }, ");
+        contenido.append("\n \t }, ");*/
         
         contenido.append("\n\t listeners: {  itemdblclick: 'onItemSelected' } ");
         contenido.append("\n});");
@@ -242,7 +279,7 @@ public class ConstructFileJS {
         StringBuffer contenido = new StringBuffer();
         String formularioName = fileTocreate + "window";
         String formularioTitle = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
-        int heightWindow = list != null ? (list.size() + 1) * 50 : 0;
+       // int heightWindow = list != null ? (list.size() + 1) * 50 : 0;
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
         
@@ -250,7 +287,8 @@ public class ConstructFileJS {
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + formularioName + "', {");
         contenido.append("\n \t extend: 'Ext.window.Window', ");
         contenido.append("\n \t alias: 'widget." + formularioName + "', ");
-        contenido.append("\n\t title: '"+formularioTitle+"', \n\t width: 400, \n\t height: " + heightWindow + ", ");
+        contenido.append("\n\t title: '"+formularioTitle+"', \n\t width: 400,");
+        //contenido.append("\n\t height: " + heightWindow + ", ");
         contenido.append("\n\n\t requires: [ ");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
@@ -277,14 +315,14 @@ public class ConstructFileJS {
                 if(columna.isIsprimarykey()){
                 	
                 	String blanco =  ", disabled: true";
-                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "', hidden: true, xtype:" + tipo + "}, ");
-                	contenido.append("\n \t\t\t {name:'" + columna.getName() +"_pk'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'} ");
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "', editable: false, xtype:'textfield'"+ ", anchor:'100%', fieldLabel:'" + columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1) + "'} ");
+                	//contenido.append("\n \t\t\t {name:'" + columna.getName() +"_pk'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'} ");
                     
                 	
                 }else{
                
                 	String blanco = (columna.isIsnull())?  " " : ", allowBlank:false, blankText:'Este Campo es Obligatorio'";
-                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'} ");
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1) + "'} ");
                 
                 }
                 
@@ -298,6 +336,21 @@ public class ConstructFileJS {
         
         contenido.append("\n\t\t ], ");
         
+        contenido.append("\n\n\t\t dockedItems: [{ ");
+        contenido.append("\n\t\t\t xtype: 'toolbar',");
+        contenido.append("\n\t\t\t dock: 'bottom',");
+        contenido.append("\n\t\t\t ui: 'footer',");
+        contenido.append("\n\t\t\t fixed: true,");
+        contenido.append("\n\t\t\t items: [");
+        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Cancelar', listeners: { click: 'onReset'  } },");
+        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Anular', listeners: { click: 'onDeleteRow'  } },");
+        contenido.append("\n\t\t\t\t '->',");
+        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Guardar', listeners: { click: 'onSave'  }}");
+        contenido.append("\n\t\t\t ]");
+        
+        contenido.append("\n\t\t }] ");
+        
+        /*
         contenido.append("\n\t\t buttons:[ ");
         contenido.append("\n\n \t\t\t {");
         contenido.append("\n\t\t\t\t xtype: 'button',");
@@ -316,8 +369,9 @@ public class ConstructFileJS {
         contenido.append("\n \t\t\t\t  listeners: { click: 'onSave'  }, align: 'right'");
         contenido.append("\n \t\t\t }");
         contenido.append("\n\t\t ] ");
+        */
         
-        contenido.append("\n\t\t}");
+        contenido.append("\n\n\t\t}");
         
         contenido.append("\n\t ]");
         contenido.append("\n\n});");
@@ -368,13 +422,18 @@ public class ConstructFileJS {
         contenido.append("\n\t }, ");
         
         contenido.append("\n\n\t onReset: function(button, e, eOpts) { ");
-        contenido.append("\n\t\t button.up('form').getForm().reset();");
-        contenido.append("\n\t\t button.up('form').up('window').hide();");
+        contenido.append("\n\t\t var ventana = button.up('toolbar').up('form').up('window');");
+        contenido.append("\n\t\t ventana.down('form').getForm().reset();");
+        contenido.append("\n\t\t ventana.hide();");
         contenido.append("\n\t }, ");
+        
+        contenido.append("\n\n\t exportExcell: function(button, e, eOpts) { ");
+        contenido.append("\n\n\t }, ");
         
         contenido.append("\n\n\t onDeleteRow: function(button, e, eOpts) {  ");
         contenido.append("\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
-        contenido.append("\n\t\t  var form = button.up('form').getForm();");
+        contenido.append("\n\t\t  var ventana = button.up('toolbar').up('form').up('window');");
+        contenido.append("\n\t\t  var form = ventana.down('form').getForm();");
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t method: 'DELETE',");
         contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params: {"+recordToDel+"},  ");
@@ -385,7 +444,8 @@ public class ConstructFileJS {
         
         contenido.append("\n\n\t onSave: function(button, e, eOpts) { ");
         contenido.append("\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
-        contenido.append("\n\t\t  var form = button.up('form').getForm();");
+        contenido.append("\n\t\t  var ventana = button.up('toolbar').up('form').up('window');");
+        contenido.append("\n\t\t  var form = ventana.down('form').getForm();");
         contenido.append("\n\n\t\t if (form.isValid()) {");
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t\t method: 'POST',");

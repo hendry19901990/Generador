@@ -7,6 +7,7 @@ public class ColumnType {
     private int data_scale;
     private boolean isnull;
     private boolean isprimarykey;
+    private String alias;
 
     public ColumnType() {
     }
@@ -63,6 +64,15 @@ public class ColumnType {
 
 	public void setIsprimarykey(boolean isprimarykey) {
 		this.isprimarykey = isprimarykey;
+	}
+	
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 
 	public String toString() {

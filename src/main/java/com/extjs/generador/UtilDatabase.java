@@ -1,7 +1,13 @@
 package com.extjs.generador;
 
 import com.extjs.generador.ColumnType;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -130,6 +136,24 @@ public class UtilDatabase {
     			
     		}
     		
+    		List<GmaAlias> listaAlias = listAlias(tabla);
+    		
+    		if(listaAlias != null){
+    			
+    			for(GmaAlias gm : listaAlias){
+    				
+    				if(existenteLista.containsKey(gm.getAliacamp().toLowerCase())){
+    					
+    					ColumnType colAUX = existenteLista.get(gm.getAliacamp().toLowerCase());
+    					colAUX.setAlias(gm.getAliaalia().toLowerCase());
+    					existenteLista.put(gm.getAliacamp().toLowerCase(), colAUX);
+    					
+    				}
+    				
+    			}
+    			
+    		}
+    		
         	List<ColumnType> list = new ArrayList<ColumnType>(existenteLista.values()); 
         	
         	Collections.sort(list, new Comparator<ColumnType>() {
@@ -192,6 +216,48 @@ public class UtilDatabase {
         }
         
         return list;
+    	
+    }
+    
+    private static List<GmaAlias> listAlias(String tabla){
+    	
+    	 List<GmaAlias> listaAlias = null;
+    	 String[] output = tabla.split("\\_");
+         String prefix = output[0];
+         String modulo = output[1];
+         
+         String urlTo = "http://10.0.0.131/GenadminOp/gmaalias/findByAliatabl/" + ( prefix.toLowerCase()+modulo.toLowerCase());
+         
+         try{
+           
+        	 URL obj = new URL(urlTo);
+ 		     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+ 		     con.setRequestMethod("GET");
+ 		     
+ 		    BufferedReader in = new BufferedReader(
+ 			        new InputStreamReader(con.getInputStream()));
+ 		     
+ 		     if(con.getResponseCode() == 200){
+ 		    	String inputLine;
+ 				StringBuffer response = new StringBuffer();
+
+ 				while ((inputLine = in.readLine()) != null) {
+ 					response.append(inputLine);
+ 				}
+ 				
+ 				System.out.println(response.toString());
+ 				Gson gson = new Gson(); 
+ 	 		    listaAlias = gson.fromJson(response.toString(), new TypeToken<List<GmaAlias>>(){}.getType());
+ 	 		   
+ 		     }
+ 		     
+ 		    in.close();
+ 		   
+         }catch(Exception e){
+        	 System.out.println(e.getMessage());
+         }
+    	
+    	return listaAlias;
     	
     }
 
