@@ -57,11 +57,14 @@ public class ConstructFileJS {
         contenido.append("\n\t alias: 'store." + storeName + "', ");
         contenido.append("\n\t storeId: '" + storeName + "', ");
         contenido.append("\n\t pageSize:60, \n\t autoLoad: true,");
-        contenido.append("\n\n \t  proxy: { ");
+        contenido.append("\n\n\t proxy: { ");
+        contenido.append("\n \t\t timeout:30000,");
         contenido.append("\n \t\t type: 'ajax', \n \t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/listAll',");
         contenido.append(" \n \t\t reader: { ");
         contenido.append("\n \t\t\t type: 'json'");
         //contenido.append("\n \t\t\t type: 'json', \n \t\t\t root: 'root' ");
+        contenido.append("\n \t\t }, ");
+        contenido.append("\n \t\t afterRequest: function(request, success){");
         contenido.append("\n \t\t } ");
         contenido.append("\n \t } ");
         contenido.append("\n\n});");
@@ -151,7 +154,7 @@ public class ConstructFileJS {
         
         contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
-        contenido.append("\n\n\t width: 740, ");
+     //   contenido.append("\n\n\t width: 740, ");
         
         
         contenido.append("\n\n\t items: [{ xtype: '" + gridPanelName + "'} ], ");
@@ -164,6 +167,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t items: [{");
         contenido.append("\n\t\t\t xtype: 'pagingtoolbar',");
         contenido.append("\n\t\t\t pageSize: 10,");
+        contenido.append("\n\t\t\t width: '100%',");
         contenido.append("\n\t\t\t displayInfo: true,");
         contenido.append("\n\t\t\t bind:{ store: '{" + storeRequire + "}' },");
         contenido.append("\n\t\t\t plugins: new Ext.ux.ProgressBarPager()");
@@ -255,7 +259,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t listeners:{ click:'newRecord'},");
         contenido.append("\n\t\t\t iconCls : 'x-fa fa-plus-square-o'");
         contenido.append("\n\t\t }, ");
-        contenido.append("\n\t\t  '->', ");
+        //contenido.append("\n\t\t  '->', ");
         contenido.append("\n\t\t { ");
         contenido.append("\n\t\t\t text: 'Exportar a Excel', ");
         contenido.append("\n\t\t\t listeners : { click:'exportExcell'}, ");
@@ -437,6 +441,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t method: 'DELETE',");
         contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params: {"+recordToDel+"},  ");
+        contenido.append("\n\t\t\t waitMsg:'Espere un momento Por favor..',");
         contenido.append("\n\t\t\t success: function(resp) { " + storeNameVar + ".load(); }, ");
         contenido.append("\n\t\t\t failure: function(response, opt) {  Ext.Msg.alert('Error', response.status);   } ");
         contenido.append("\n\t\t });");
@@ -450,6 +455,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t\t method: 'POST',");
         contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params:  Ext.encode(form.getValues()), ");
+        contenido.append("\n\t\t\t waitMsg:'Espere un momento Por favor..',");
         contenido.append("\n\t\t\t success: function(form, action) {     ");
         contenido.append("\n\t\t\t\t Ext.Msg.alert('Notificacion', 'Se Guardo Satisfactoriamente');");
         contenido.append("\n\t\t\t\t button.up('form').up('window').hide();");
@@ -457,6 +463,13 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t }, ");
         contenido.append("\n\t\t\t failure: function(response, opt) {  Ext.Msg.alert('Error', response.status);   } ");
         contenido.append("\n\t\t  });");
+        contenido.append("\n\n\t\t }else{");
+        contenido.append("\n\t\t\t Ext.toast({");
+        contenido.append("\n\t\t\t\t html: 'Datos de formulario inválido', \n\t\t\t\t align: 'tr',");
+        contenido.append("\n\t\t\t\t slideInDuration: 400,\n\t\t\t\t minWidth: 400,");
+        contenido.append("\n\t\t\t\t iconCls: 'x-fa fa-bullhorn',\n\t\t\t\t title: 'Notificación Sistema',");
+        contenido.append("\n\t\t\t\t closable: true");
+        contenido.append("\n\t\t\t });");
         contenido.append("\n\n\t\t }");
         contenido.append("\n\t } ");
         
