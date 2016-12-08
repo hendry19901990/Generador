@@ -221,7 +221,7 @@ public class ConstructFileJS {
                 } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || 
                 		columna.getType().equalsIgnoreCase("DATE")) {
                     
-                	filter = "xtype: 'datecolumn', filter: true";
+                	filter = "xtype: 'datecolumn', filter: { type:'date', fields:{ lt:{ text: 'Antes de'}, gt:{ text:'Despues de'}, eq:{ text: 'En '} } }";
                 	
                 }else{
                 	filter = "filter: {type: 'string'}";
@@ -435,33 +435,63 @@ public class ConstructFileJS {
         contenido.append("\n\n\t }, ");
         
         contenido.append("\n\n\t onDeleteRow: function(button, e, eOpts) {  ");
-        contenido.append("\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
-        contenido.append("\n\t\t  var ventana = button.up('toolbar').up('form').up('window');");
-        contenido.append("\n\t\t  var form = ventana.down('form').getForm();");
-        contenido.append("\n\t\t  Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t method: 'DELETE',");
-        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params: {"+recordToDel+"},  ");
-        contenido.append("\n\t\t\t waitMsg:'Espere un momento Por favor..',");
-        contenido.append("\n\t\t\t success: function(resp) { " + storeNameVar + ".load(); }, ");
-        contenido.append("\n\t\t\t failure: function(response, opt) {  Ext.Msg.alert('Error', response.status);   } ");
-        contenido.append("\n\t\t });");
-        contenido.append("\n\t }, ");
+        contenido.append("\n\n\t\t Ext.Msg.confirm('Eliminar','Estas de Seguro de Continuar?',function(buttonId, value){");
+        contenido.append("\n\n\t\t\t if (buttonId === 'yes'){");
+        contenido.append("\n\n\t\t\t\t var waitModal = Ext.MessageBox.show({");
+        contenido.append("\n\t\t\t\t\t msg: 'Enviando, espere un momento por favor...',");
+        contenido.append("\n\t\t\t\t\t progressText: 'Ingresando...',");
+        contenido.append("\n\t\t\t\t\t width: 400,");
+        contenido.append("\n\t\t\t\t\t wait: { interval: 200 },");
+        contenido.append("\n\t\t\t\t\t animateTarget: button");
+        contenido.append("\n\t\t\t\t   });");
+        contenido.append("\n\n\t\t\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
+        contenido.append("\n\t\t\t\t var ventana = button.up('toolbar').up('form').up('window');");
+        contenido.append("\n\t\t\t\t var form = ventana.down('form').getForm();");
+        contenido.append("\n\t\t\t\t Ext.Ajax.request({ ");
+        contenido.append("\n\t\t\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t\t\t method: 'DELETE',");
+        contenido.append("\n\t\t\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t\t\t params: {"+recordToDel+"},  ");
+        //contenido.append("\n\t\t\t\t\t waitMsg:'Espere un momento Por favor..',");
+        contenido.append("\n\t\t\t\t\t success: function(resp) { ");
+        contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
+        contenido.append("\n\t\t\t\t\t\t " + storeNameVar + ".load();  ");
+        contenido.append("\n\t\t\t\t\t }, ");
+        contenido.append("\n\t\t\t\t\t failure: function(response, opt) {   ");
+        contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
+        contenido.append("\n\t\t\t\t\t\t Ext.Msg.alert('Error', response.status); ");
+        contenido.append("\n\t\t\t\t\t } ");
+        contenido.append("\n\t\t\t\t });");
+        contenido.append("\n\t\t\t }else{");
+        contenido.append("\n\t\t\t\t  return false; ");
+        contenido.append("\n\t\t\t }");
+        contenido.append("\n\n\t\t }, this);");
+        contenido.append("\n\n\t }, ");
         
         contenido.append("\n\n\t onSave: function(button, e, eOpts) { ");
-        contenido.append("\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
+        contenido.append("\n\n\t\t var waitModal = Ext.MessageBox.show({");
+        contenido.append("\n\t\t\t msg: 'Enviando, espere un momento por favor...',");
+        contenido.append("\n\t\t\t progressText: 'Ingresando...',");
+        contenido.append("\n\t\t\t width: 400,");
+        contenido.append("\n\t\t\t wait: { interval: 200 },");
+        contenido.append("\n\t\t\t animateTarget: button");
+        contenido.append("\n\t\t   });");
+        contenido.append("\n\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
         contenido.append("\n\t\t  var ventana = button.up('toolbar').up('form').up('window');");
         contenido.append("\n\t\t  var form = ventana.down('form').getForm();");
         contenido.append("\n\n\t\t if (form.isValid()) {");
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t\t method: 'POST',");
         contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params:  Ext.encode(form.getValues()), ");
-        contenido.append("\n\t\t\t waitMsg:'Espere un momento Por favor..',");
-        contenido.append("\n\t\t\t success: function(form, action) {     ");
+        //contenido.append("\n\t\t\t waitMsg:'Espere un momento Por favor..',");
+        contenido.append("\n\t\t\t success: function(form, action) { ");
+        contenido.append("\n\t\t\t\t waitModal.hide();");
         contenido.append("\n\t\t\t\t Ext.Msg.alert('Notificacion', 'Se Guardo Satisfactoriamente');");
         contenido.append("\n\t\t\t\t button.up('form').up('window').hide();");
         contenido.append("\n\t\t\t\t " + storeNameVar + ".load();");
         contenido.append("\n\t\t\t }, ");
-        contenido.append("\n\t\t\t failure: function(response, opt) {  Ext.Msg.alert('Error', response.status);   } ");
+        contenido.append("\n\t\t\t failure: function(response, opt) {  ");
+        contenido.append("\n\t\t\t\t waitModal.hide();");
+        contenido.append("\n\t\t\t\t Ext.Msg.alert('Error', response.status); ");
+        contenido.append("\n\t\t\t } ");
         contenido.append("\n\t\t  });");
         contenido.append("\n\n\t\t }else{");
         contenido.append("\n\t\t\t Ext.toast({");
