@@ -65,6 +65,17 @@ public class ConstructFileJS {
         //contenido.append("\n \t\t\t type: 'json', \n \t\t\t root: 'root' ");
         contenido.append("\n \t\t }, ");
         contenido.append("\n \t\t afterRequest: function(request, success){");
+        contenido.append("\n \t\t\t if(!success){");
+        contenido.append("\n \t\t\t\t Ext.toast({");
+        contenido.append("\n \t\t\t\t\t html: '<div style=\"background: white; color: red\">No se pudieron cargar los datos</div>',");
+        contenido.append("\n \t\t\t\t\t align: 'tr',");
+        contenido.append("\n \t\t\t\t\t slideInDuration: 400,");
+        contenido.append("\n \t\t\t\t\t minWidth: 400,");
+        contenido.append("\n \t\t\t\t\t iconCls: 'x-fa fa-bullhorn',");
+        contenido.append("\n \t\t\t\t\t title: 'Notificación del sistema',");
+        contenido.append("\n \t\t\t\t\t closable: true");
+        contenido.append("\n \t\t\t\t });");
+        contenido.append("\n \t\t\t }");
         contenido.append("\n \t\t } ");
         contenido.append("\n \t } ");
         contenido.append("\n\n});");
@@ -262,7 +273,7 @@ public class ConstructFileJS {
         //contenido.append("\n\t\t  '->', ");
         contenido.append("\n\t\t { ");
         contenido.append("\n\t\t\t text: 'Exportar a Excel', ");
-        contenido.append("\n\t\t\t listeners : { click:'exportExcell'}, ");
+        contenido.append("\n\t\t\t listeners : { click:'onExportExcel'}, ");
         contenido.append("\n\t\t\t iconCls : 'x-fa fa-file-excel-o' ");
         contenido.append("\n\t\t } ");
         contenido.append("\n \t ], ");
@@ -431,8 +442,58 @@ public class ConstructFileJS {
         contenido.append("\n\t\t ventana.hide();");
         contenido.append("\n\t }, ");
         
-        contenido.append("\n\n\t exportExcell: function(button, e, eOpts) { ");
+        /* onExportExcel */
+        contenido.append("\n\n\t onExportExcel: function(button, e, eOpts) { ");
+        contenido.append("\n\n\t\t Ext.Ajax.request({ ");
+        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+"/util/getExcel',");
+        contenido.append("\n\t\t\t method: 'POST',");
+        contenido.append("\n\t\t\t headers: {");
+        contenido.append("\n\t\t\t\t 'Content-Type' : 'application/vnd.ms-excel',");
+        contenido.append("\n\t\t\t\t 'Content-Disposition' : 'attachment'");
+        contenido.append("\n\t\t\t },");
+        contenido.append("\n\t\t\t success: function(response, opt) { ");
+        
+        contenido.append("\n\t\t\t\t var disposition = response.getResponseHeader('Content-Disposition');");
+        contenido.append("\n\t\t\t\t var type = response.getResponseHeader('Content-Type');");
+        contenido.append("\n\t\t\t\t var blob = new Blob([response.responseText], { type: type });");
+        contenido.append("\n\t\t\t\t var filename = '"+tablaName.toLowerCase()+".xls';");
+        
+        contenido.append("\n\t\t\t\t if (typeof window.navigator.msSaveBlob !== 'undefined') {");
+        contenido.append("\n\t\t\t\t\t window.navigator.msSaveBlob(blob, filename);");
+        contenido.append("\n\t\t\t\t }else {");
+        contenido.append("\n\t\t\t\t\t var URL = window.URL || window.webkitURL;");
+        contenido.append("\n\t\t\t\t\t var downloadUrl = URL.createObjectURL(blob);");
+        contenido.append("\n\t\t\t\t\t if (filename) {");
+        contenido.append("\n\t\t\t\t\t // use HTML5 a[download] attribute to specify filename");
+        contenido.append("\n\t\t\t\t\t var a = document.createElement(\"a\");");
+        contenido.append("\n\t\t\t\t\t //safari no soporta esto todavia");
+        contenido.append("\n\t\t\t\t\t a.href = downloadUrl;");
+        contenido.append("\n\t\t\t\t\t a.download = filename;");
+        contenido.append("\n\t\t\t\t\t document.body.appendChild(a);");
+        contenido.append("\n\t\t\t\t\t a.click();");
+        contenido.append("\n\t\t\t\t\t }");
+        contenido.append("\n\t\t\t\t\t setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup");
+        contenido.append("\n\t\t\t\t }");
+        
+
+        contenido.append("\n\t\t\t\t Ext.toast({");
+        contenido.append("\n\t\t\t\t\t html: 'Se Descargo exitosamente',");
+        contenido.append("\n\t\t\t\t\t align: 'tr',");
+        contenido.append("\n\t\t\t\t\t slideInDuration: 400,");
+        contenido.append("\n\t\t\t\t\t minWidth: 400,");
+        contenido.append("\n\t\t\t\t\t iconCls: 'x-fa fa-bullhorn',");
+        contenido.append("\n\t\t\t\t\t title: 'Notificación Sistema',");
+        contenido.append("\n\t\t\t\t\t closable: true");
+        contenido.append("\n\t\t\t\t });");
+        
+        contenido.append("\n\n\t\t\t },");
+        contenido.append("\n\t\t\t failure: function(response, opt) { ");
+        contenido.append("\n\t\t\t\t console.dir(response); ");
+        contenido.append("\n\t\t\t\t Ext.Msg.alert('Error', response.status); ");
+        contenido.append("\n\t\t\t }");
+        contenido.append("\n\t\t });");
         contenido.append("\n\n\t }, ");
+        /* onExportExcel */
         
         contenido.append("\n\n\t onDeleteRow: function(button, e, eOpts) {  ");
         contenido.append("\n\n\t\t Ext.Msg.confirm('Eliminar','Estas de Seguro de Continuar?',function(buttonId, value){");
@@ -451,7 +512,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t\t\t method: 'DELETE',");
         contenido.append("\n\t\t\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t\t\t params: {"+recordToDel+"},  ");
         //contenido.append("\n\t\t\t\t\t waitMsg:'Espere un momento Por favor..',");
-        contenido.append("\n\t\t\t\t\t success: function(resp) { ");
+        contenido.append("\n\t\t\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
         contenido.append("\n\t\t\t\t\t\t " + storeNameVar + ".load();  ");
         contenido.append("\n\t\t\t\t\t }, ");
@@ -482,11 +543,20 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t\t method: 'POST',");
         contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params:  Ext.encode(form.getValues()), ");
         //contenido.append("\n\t\t\t waitMsg:'Espere un momento Por favor..',");
-        contenido.append("\n\t\t\t success: function(form, action) { ");
+        contenido.append("\n\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t waitModal.hide();");
-        contenido.append("\n\t\t\t\t Ext.Msg.alert('Notificacion', 'Se Guardo Satisfactoriamente');");
-        contenido.append("\n\t\t\t\t button.up('form').up('window').hide();");
-        contenido.append("\n\t\t\t\t " + storeNameVar + ".load();");
+        contenido.append("\n\n\t\t\t\t button.up('form').up('window').hide();");
+        //contenido.append("\n\t\t\t\t Ext.Msg.alert('Notificacion', 'Se Guardo Satisfactoriamente');");
+        contenido.append("\n\n\t\t\t\t Ext.toast({");
+        contenido.append("\n\t\t\t\t\t html: 'Se ha guardado exitosamente',");
+        contenido.append("\n\t\t\t\t\t align: 'tr',");
+        contenido.append("\n\t\t\t\t\t slideInDuration: 400,");
+        contenido.append("\n\t\t\t\t\t minWidth: 400,");
+        contenido.append("\n\t\t\t\t\t iconCls: 'x-fa fa-bullhorn',");
+        contenido.append("\n\t\t\t\t\t title: 'Notificación Sistema',");
+        contenido.append("\n\t\t\t\t\t closable: true");
+        contenido.append("\n\t\t\t\t });");
+        contenido.append("\n\n\t\t\t\t " + storeNameVar + ".load();");
         contenido.append("\n\t\t\t }, ");
         contenido.append("\n\t\t\t failure: function(response, opt) {  ");
         contenido.append("\n\t\t\t\t waitModal.hide();");
