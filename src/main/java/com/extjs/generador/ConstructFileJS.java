@@ -257,7 +257,7 @@ public class ConstructFileJS {
             contenido.append("\n \t\t\t\t iconCls: 'fa-remove', ");
             contenido.append("\n \t\t\t\t tooltip: 'Eliminar', ");
             contenido.append("\n \t\t\t\t altText: 'Eliminar', ");
-            contenido.append("\n \t\t\t\t handler: 'onDeleteRow' ");
+            contenido.append("\n \t\t\t\t handler: 'onDelete' ");
             contenido.append("\n \t\t\t }] ");
             contenido.append("\n \t\t }");
             */
@@ -358,7 +358,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t fixed: true,");
         contenido.append("\n\t\t\t items: [");
         contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Cancelar', listeners: { click: 'onReset'  } },");
-        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Anular', listeners: { click: 'onDeleteRow'  } },");
+        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Anular', listeners: { click: 'onDelete'  } },");
         contenido.append("\n\t\t\t\t '->',");
         contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Guardar', listeners: { click: 'onSave'  }}");
         contenido.append("\n\t\t\t ]");
@@ -445,7 +445,7 @@ public class ConstructFileJS {
         /* onExportExcel */
         contenido.append("\n\n\t onExportExcel: function(button, e, eOpts) { ");
         contenido.append("\n\n\t\t Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+"/util/getExcel',");
+        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/util/getExcel',");
         contenido.append("\n\t\t\t method: 'POST',");
         contenido.append("\n\t\t\t headers: {");
         contenido.append("\n\t\t\t\t 'Content-Type' : 'application/vnd.ms-excel',");
@@ -495,8 +495,8 @@ public class ConstructFileJS {
         contenido.append("\n\n\t }, ");
         /* onExportExcel */
         
-        contenido.append("\n\n\t onDeleteRow: function(button, e, eOpts) {  ");
-        contenido.append("\n\n\t\t Ext.Msg.confirm('Eliminar','Estas de Seguro de Continuar?',function(buttonId, value){");
+        contenido.append("\n\n\t onDelete: function(button, e, eOpts) {  ");
+        contenido.append("\n\n\t\t Ext.Msg.confirm('Eliminar','¿Seguro que desea continuar?',function(buttonId, value){");
         contenido.append("\n\n\t\t\t if (buttonId === 'yes'){");
         contenido.append("\n\n\t\t\t\t var waitModal = Ext.MessageBox.show({");
         contenido.append("\n\t\t\t\t\t msg: 'Enviando, espere un momento por favor...',");
