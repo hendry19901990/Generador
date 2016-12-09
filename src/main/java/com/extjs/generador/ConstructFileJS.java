@@ -240,6 +240,9 @@ public class ConstructFileJS {
             	
             	String texto = columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1);
             	
+            	if(i==0)
+            		contenido.append("\n \t\t Ext.grid.RowNumberer(),");
+            	
                 contenido.append("\n \t\t {text:'"+texto+ "', "+filter+",dataIndex:'" + columna.getName() + "', flex: 1}");
                 
                 if(i < list.size()-1)
