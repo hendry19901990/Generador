@@ -324,7 +324,7 @@ public class ConstructFileJS {
                 } else if (columna.getType().equalsIgnoreCase("NUMBER") || columna.getType().equalsIgnoreCase("FLOAT") || columna.getType().equalsIgnoreCase("DECIMAL") || columna.getType().equalsIgnoreCase("Floating-Point") || columna.getType().equalsIgnoreCase("BINARY_FLOAT") || columna.getType().equalsIgnoreCase("BINARY_DOUBLE")) {
                     tipo = "'numberfield'";
                 } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || columna.getType().equalsIgnoreCase("DATE")) {
-                    tipo = "'datefield'";
+                    tipo = "'datefield', submitFormat: 'U000', format:'d-m-Y'";
                 }
                 
                 if(columna.isIsprimarykey()){
