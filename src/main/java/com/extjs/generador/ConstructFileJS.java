@@ -56,7 +56,7 @@ public class ConstructFileJS {
         contenido.append("\n\n\t model: '" + modulo + ".model." + modelName + "', ");
         contenido.append("\n\t alias: 'store." + storeName + "', ");
         contenido.append("\n\t storeId: '" + storeName + "', ");
-        contenido.append("\n\t pageSize:60, \n\t autoLoad: true,");
+        contenido.append("\n\t pageSize:50, \n\t autoLoad: true,");
         contenido.append("\n\n\t proxy: { ");
         contenido.append("\n \t\t timeout:30000,");
         contenido.append("\n \t\t type: 'ajax', \n \t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/listAll',");
@@ -123,12 +123,31 @@ public class ConstructFileJS {
                 			", convert: function(v,record){return record.data."+columna.getName()+";} },");
                 }*/
                 
-                contenido.append("\n \t\t {name:'" + columna.getName() + "', type:" + tipo + ", mapping:'" + columna.getName() + "'");
                 
-                if(isDate)
-                	contenido.append(", convert: function(value, record){ if(value!=null){ return new Date(value); }else{ return value; }  } ");
                 
-                contenido.append("}");
+                if(isDate){
+                	
+                	contenido.append("\n \t\t {");
+                	contenido.append("\n \t\t\t name:'" + columna.getName() + "', ");
+                	contenido.append("\n \t\t\t type:" + tipo + ",");
+                	contenido.append("\n \t\t\t mapping:'" + columna.getName() + "',");
+                	contenido.append("\n \t\t\t convert: function(value, record){");
+                	contenido.append("\n \t\t\t\t  if(value!=null){");
+                	contenido.append("\n \t\t\t\t\t return new Date(value);");
+                	contenido.append("\n \t\t\t\t  }else{");
+                	contenido.append("\n \t\t\t\t\t return value;");
+                	contenido.append("\n \t\t\t\t  }");
+                	contenido.append("\n \t\t\t } ");
+                	contenido.append("\n \t\t }");
+                	
+                }else{
+                	
+                	contenido.append("\n \t\t {name:'" + columna.getName() + "', type:" + tipo + ", mapping:'" + columna.getName() + "'}");
+                	
+                }
+                	
+                
+                
                 
                 if (i < (list.size()-1)) {
                     contenido.append(",");
@@ -206,6 +225,8 @@ public class ConstructFileJS {
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
         
+        boolean isDate = false;
+        
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + gridPanelName + "', {");
         contenido.append("\n \t extend: 'Ext.grid.Panel', ");
         contenido.append("\n \t xtype: '" + gridPanelName + "', ");
@@ -249,9 +270,33 @@ public class ConstructFileJS {
             	String texto = columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1);
             	
             	if(i==0)
-            		contenido.append("\n \t\t Ext.grid.RowNumberer(),");
+            		contenido.append("\n \t\t {xtype: 'rownumberer'},");
             	
-                contenido.append("\n \t\t {text:'"+texto+ "', "+filter+",dataIndex:'" + columna.getName() + "', flex: 1}");
+            	if(isDate){
+            		
+            		contenido.append("\n \t\t {");
+            		contenido.append("\n \t\t\t text:'"+texto+ "', ");
+            		contenido.append("\n \t\t\t xtype: 'datecolumn',");
+            		contenido.append("\n \t\t\t format: 'd-m-Y H',");
+            		contenido.append("\n \t\t\t filter: {");
+            		contenido.append("\n \t\t\t\t type:'date',");
+            		contenido.append("\n \t\t\t\t fields:{");
+            		contenido.append("\n \t\t\t\t\t lt:{ text: 'Antes de'},");
+            		contenido.append("\n \t\t\t\t\t gt:{ text:'Despues de'},");
+            		contenido.append("\n \t\t\t\t\t eq:{ text: 'En '}");
+            		contenido.append("\n \t\t\t\t }");
+            		contenido.append("\n \t\t\t },");
+            		contenido.append("\n \t\t\t dataIndex:'" + columna.getName() + "', ");
+            		contenido.append("\n \t\t\t flex: 1,");
+            		contenido.append("\n \t\t\t format: 'd-m-Y H'");
+            		contenido.append("\n \t\t }");
+            		
+            	}else{
+            		
+            		contenido.append("\n \t\t {text:'"+texto+ "', "+filter+",dataIndex:'" + columna.getName() + "', flex: 1}");
+            		
+            	}
+                
                 
                 if(i < list.size()-1)
                 	contenido.append(",");
@@ -408,6 +453,7 @@ public class ConstructFileJS {
     public static String createViewController(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
     	
         StringBuffer contenido = new StringBuffer();
+        StringBuffer dataToExportExcell = new StringBuffer();
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String formularioName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "window";
         String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
@@ -418,6 +464,8 @@ public class ConstructFileJS {
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "', {");
         contenido.append("\n \t extend: 'Ext.app.ViewController', ");
         contenido.append("\n \t alias: 'controller." + prefix + "." + "controller" + "." + viewControllerName + "', ");
+        
+        /* newRecord */
         contenido.append("\n\n\t newRecord: function(){ ");
         contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
         contenido.append("\n\t\t ventana.controller = this;");
@@ -434,11 +482,13 @@ public class ConstructFileJS {
         	
         }
         
+
         
         contenido.append("\n\t\t var record = Ext.create('"+modelName+"',{"+recordToNew+"}); ");
         contenido.append("\n\t\t ventana.down('form').getForm().loadRecord(record); ");
         contenido.append("\n\t\t ventana.show(); ");
         contenido.append("\n\t }, ");
+        /* newRecord */
         
         contenido.append("\n\n\t onItemSelected : function( grid , record , tr , rowIndex , e , eOpts ){ ");
         contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
@@ -455,9 +505,32 @@ public class ConstructFileJS {
         
         /* onExportExcel */
         contenido.append("\n\n\t onExportExcel: function(button, e, eOpts) { ");
+        contenido.append("\n\n\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
+        
+        dataToExportExcell.append("\n\n\t\t var dataTosendExportExcell = {");
+        dataToExportExcell.append("\n\t\t\t \"title\": \""+tablaName+"\",");
+        dataToExportExcell.append("\n\t\t\t \"headers\": [");
+        
+        int i=0;
+        for(ColumnType col : list){
+        	dataToExportExcell.append(" \""+col.getAlias()+"\"");
+        	
+        	 if(i < (list.size()-1))
+        		 dataToExportExcell.append(",");
+        	
+        	i++;
+        }
+        
+        dataToExportExcell.append(" ],");
+        dataToExportExcell.append("\n\t\t\t \"data\": " + storeNameVar+".data.items");
+        dataToExportExcell.append("\n\n\t\t};");
+        
+        contenido.append(dataToExportExcell.toString());
+        
         contenido.append("\n\n\t\t Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/util/getExcel',");
         contenido.append("\n\t\t\t method: 'POST',");
+        contenido.append("\n\t\t\t params: dataTosendExportExcell,");
         contenido.append("\n\t\t\t headers: {");
         contenido.append("\n\t\t\t\t 'Content-Type' : 'application/vnd.ms-excel',");
         contenido.append("\n\t\t\t\t 'Content-Disposition' : 'attachment'");
