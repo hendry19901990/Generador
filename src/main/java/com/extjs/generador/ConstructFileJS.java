@@ -1,6 +1,6 @@
 package com.extjs.generador;
 
-import com.extjs.generador.ColumnType;
+
 
 import java.util.List;
 
@@ -95,6 +95,7 @@ public class ConstructFileJS {
         if (list != null && list.size() > 0) {
             for (ColumnType columna : list) {
                 String tipo = "'auto'";
+                boolean isDate = false;
                 if (columna.getType().equalsIgnoreCase("VARCHAR2") || columna.getType().equalsIgnoreCase("VARCHAR") || 
                 		columna.getType().equalsIgnoreCase("CHAR") || columna.getType().equalsIgnoreCase("NCHAR") || 
                 		columna.getType().equalsIgnoreCase("NVARCHAR2") || columna.getType().equalsIgnoreCase("LOB") ||
@@ -112,6 +113,7 @@ public class ConstructFileJS {
                 		columna.getType().equalsIgnoreCase("DATE")) {
                     
                 	tipo = "'date'";
+                	isDate = true;
                 	
                 }
                 
@@ -121,7 +123,12 @@ public class ConstructFileJS {
                 			", convert: function(v,record){return record.data."+columna.getName()+";} },");
                 }*/
                 
-                contenido.append("\n \t\t {name:'" + columna.getName() + "', type:" + tipo + ", mapping:'" + columna.getName() + "'}");
+                contenido.append("\n \t\t {name:'" + columna.getName() + "', type:" + tipo + ", mapping:'" + columna.getName() + "'");
+                
+                if(isDate)
+                	contenido.append(", convert: function(value, record){ if(value!=null){ return new Date(value); }else{ return value; }  } ");
+                
+                contenido.append("}");
                 
                 if (i < (list.size()-1)) {
                     contenido.append(",");
@@ -153,6 +160,7 @@ public class ConstructFileJS {
         contenido.append("\n\t extend: 'Ext.panel.Panel',");
         contenido.append("\n\t alias: 'widget." + prefix + "." + "view" + "." + widgetName + "', ");
         contenido.append("\n\t id: '" + widgetName + "', ");
+        contenido.append("\n\t scrollable: true, ");
         
         contenido.append("\n\n\t requires: [ ");
         contenido.append("\n\t\t 'Ext.toolbar.Paging',");
@@ -232,7 +240,7 @@ public class ConstructFileJS {
                 } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || 
                 		columna.getType().equalsIgnoreCase("DATE")) {
                     
-                	filter = "xtype: 'datecolumn', filter: { type:'date', fields:{ lt:{ text: 'Antes de'}, gt:{ text:'Despues de'}, eq:{ text: 'En '} } }";
+                	filter = "xtype: 'datecolumn',  format: 'd-m-Y H', filter: { type:'date', fields:{ lt:{ text: 'Antes de'}, gt:{ text:'Despues de'}, eq:{ text: 'En '} } }";
                 	
                 }else{
                 	filter = "filter: {type: 'string'}";
