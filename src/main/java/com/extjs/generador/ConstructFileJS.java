@@ -262,7 +262,8 @@ public class ConstructFileJS {
                 		columna.getType().equalsIgnoreCase("DATE")) {
                     
                 	filter = "xtype: 'datecolumn',  format: 'd-m-Y H', filter: { type:'date', fields:{ lt:{ text: 'Antes de'}, gt:{ text:'Despues de'}, eq:{ text: 'En '} } }";
-                	
+                	isDate = true;
+                	 
                 }else{
                 	filter = "filter: {type: 'string'}";
                 }

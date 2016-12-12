@@ -19,6 +19,7 @@ public class ColumnType {
         this.data_scale = data_scale;
         this.isnull = isnull;
         this.isprimarykey = isprimarykey;
+        this.alias = name.toLowerCase();
     }
 
     public boolean isIsnull() {
