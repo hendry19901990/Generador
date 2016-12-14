@@ -61,8 +61,8 @@ public class ConstructFileJS {
         contenido.append("\n \t\t timeout:30000,");
         contenido.append("\n \t\t type: 'ajax', \n \t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/listAll',");
         contenido.append(" \n \t\t reader: { ");
-        contenido.append("\n \t\t\t type: 'json'");
-        //contenido.append("\n \t\t\t type: 'json', \n \t\t\t root: 'root' ");
+        //contenido.append("\n \t\t\t type: 'json'");
+        contenido.append("\n \t\t\t type: 'json', \n \t\t\t rootProperty: 'data' ");
         contenido.append("\n \t\t }, ");
         contenido.append("\n \t\t afterRequest: function(request, success){");
         contenido.append("\n \t\t\t if(!success){");
@@ -455,6 +455,7 @@ public class ConstructFileJS {
     	
         StringBuffer contenido = new StringBuffer();
         StringBuffer dataToExportExcell = new StringBuffer();
+        StringBuffer constructArrayExcell = new StringBuffer();
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String formularioName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "window";
         String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
@@ -507,6 +508,8 @@ public class ConstructFileJS {
         /* onExportExcel */
         contenido.append("\n\n\t onExportExcel: function(button, e, eOpts) { ");
         contenido.append("\n\n\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
+        contenido.append("\n\t\t var dataToVector = [];");
+        contenido.append("\n\t\t var i = 0;");
         
         dataToExportExcell.append("\n\n\t\t var dataTosendExportExcell = {");
         dataToExportExcell.append("\n\t\t\t \"title\": \""+tablaName+"\",");
@@ -516,22 +519,33 @@ public class ConstructFileJS {
         for(ColumnType col : list){
         	dataToExportExcell.append(" \""+col.getAlias()+"\"");
         	
-        	 if(i < (list.size()-1))
+        	constructArrayExcell.append("\n\t\t\t\t\t \""+col.getName()+"\": "  + storeNameVar + ".data.items[i].data."+col.getName());
+        	
+        	 if(i < (list.size()-1)){
         		 dataToExportExcell.append(",");
+        		 constructArrayExcell.append(",");
+        	 }
         	
         	i++;
         }
         
         dataToExportExcell.append(" ],");
-        dataToExportExcell.append("\n\t\t\t \"data\": " + storeNameVar+".data.items");
+        dataToExportExcell.append("\n\t\t\t \"data\": dataToVector");
         dataToExportExcell.append("\n\n\t\t};");
+        
+        contenido.append("\n\n\t\t if(" + storeNameVar + ".data.length>0){");
+        contenido.append("\n\n\t\t\t for(i=0;i<" + storeNameVar + ".length;i++){");
+        contenido.append("\n\n\t\t\t\t dataToVector.push({"+constructArrayExcell.toString()+" \n\t\t\t\t });");
+        contenido.append("\n\n\t\t\t }");
+        contenido.append("\n\n\t\t }");
+        
         
         contenido.append(dataToExportExcell.toString());
         
         contenido.append("\n\n\t\t Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/util/getExcel',");
         contenido.append("\n\t\t\t method: 'POST',");
-        contenido.append("\n\t\t\t params: dataTosendExportExcell,");
+        contenido.append("\n\t\t\t params: Ext.encode(dataTosendExportExcell),");
         contenido.append("\n\t\t\t headers: {");
         contenido.append("\n\t\t\t\t 'Content-Type' : 'application/vnd.ms-excel',");
         contenido.append("\n\t\t\t\t 'Content-Disposition' : 'attachment'");
@@ -595,7 +609,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t var form = ventana.down('form').getForm();");
         contenido.append("\n\t\t\t\t Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t\t\t method: 'DELETE',");
-        contenido.append("\n\t\t\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t\t\t params: {"+recordToDel+"},  ");
+        contenido.append("\n\t\t\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t\t\t params: Ext.encode({"+recordToDel+"}),  ");
         //contenido.append("\n\t\t\t\t\t waitMsg:'Espere un momento Por favor..',");
         contenido.append("\n\t\t\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
