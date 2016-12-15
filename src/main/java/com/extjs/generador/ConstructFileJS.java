@@ -534,7 +534,7 @@ public class ConstructFileJS {
         dataToExportExcell.append("\n\n\t\t};");
         
         contenido.append("\n\n\t\t if(" + storeNameVar + ".data.length>0){");
-        contenido.append("\n\n\t\t\t for(i=0;i<" + storeNameVar + ".length;i++){");
+        contenido.append("\n\n\t\t\t for(i=0;i<" + storeNameVar + ".data.length;i++){");
         contenido.append("\n\n\t\t\t\t dataToVector.push({"+constructArrayExcell.toString()+" \n\t\t\t\t });");
         contenido.append("\n\n\t\t\t }");
         contenido.append("\n\n\t\t }");
