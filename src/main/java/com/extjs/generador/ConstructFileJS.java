@@ -508,10 +508,18 @@ public class ConstructFileJS {
         /* onExportExcel */
         contenido.append("\n\n\t onExportExcel: function(button, e, eOpts) { ");
         contenido.append("\n\n\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
-        contenido.append("\n\t\t var dataToVector = [];");
+        contenido.append("\n\n\t\t var waitModal = Ext.MessageBox.show({");
+        contenido.append("\n\t\t\t msg: 'Enviando, espere un momento por favor...',");
+        contenido.append("\n\t\t\t progressText: 'Exportando a Excell...',");
+        contenido.append("\n\t\t\t width: 400,");
+        contenido.append("\n\t\t\t wait: { interval: 200 },");
+        contenido.append("\n\t\t\t animateTarget: button");
+        contenido.append("\n\t\t  });");
+        
+        contenido.append("\n\n\t\t var dataToVector = [];");
         contenido.append("\n\t\t var i = 0;");
         
-        dataToExportExcell.append("\n\n\t\t var dataTosendExportExcell = {");
+        dataToExportExcell.append("\n\n\t\t var parameters = {");
         dataToExportExcell.append("\n\t\t\t \"title\": \""+tablaName+"\",");
         dataToExportExcell.append("\n\t\t\t \"headers\": [");
         
@@ -519,7 +527,7 @@ public class ConstructFileJS {
         for(ColumnType col : list){
         	dataToExportExcell.append(" \""+col.getAlias()+"\"");
         	
-        	constructArrayExcell.append("\n\t\t\t\t\t \""+col.getName()+"\": "  + storeNameVar + ".data.items[i].data."+col.getName());
+        	constructArrayExcell.append("\n\t\t\t\t\t "+col.getName()+": "  + storeNameVar + ".data.items[i].data."+col.getName());
         	
         	 if(i < (list.size()-1)){
         		 dataToExportExcell.append(",");
@@ -543,40 +551,22 @@ public class ConstructFileJS {
         contenido.append(dataToExportExcell.toString());
         
         contenido.append("\n\n\t\t Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/util/getExcel',");
+        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/GenadminOp/util/getExcel',");
         contenido.append("\n\t\t\t method: 'POST',");
-        contenido.append("\n\t\t\t params: Ext.encode(dataTosendExportExcell),");
+        contenido.append("\n\t\t\t params: Ext.encode(parameters),");
         contenido.append("\n\t\t\t headers: {");
         contenido.append("\n\t\t\t\t 'Content-Type' : 'application/vnd.ms-excel',");
-        contenido.append("\n\t\t\t\t 'Content-Disposition' : 'attachment'");
+       // contenido.append("\n\t\t\t\t 'Content-Disposition' : 'attachment'");
         contenido.append("\n\t\t\t },");
         contenido.append("\n\t\t\t success: function(response, opt) { ");
+        contenido.append("\n\t\t\t\t waitModal.hide();");
         
-        contenido.append("\n\t\t\t\t var disposition = response.getResponseHeader('Content-Disposition');");
-        contenido.append("\n\t\t\t\t var type = response.getResponseHeader('Content-Type');");
-        contenido.append("\n\t\t\t\t var blob = new Blob([response.responseText], { type: type });");
-        contenido.append("\n\t\t\t\t var filename = '"+tablaName.toLowerCase()+".xls';");
-        
-        contenido.append("\n\t\t\t\t if (typeof window.navigator.msSaveBlob !== 'undefined') {");
-        contenido.append("\n\t\t\t\t\t window.navigator.msSaveBlob(blob, filename);");
-        contenido.append("\n\t\t\t\t }else {");
-        contenido.append("\n\t\t\t\t\t var URL = window.URL || window.webkitURL;");
-        contenido.append("\n\t\t\t\t\t var downloadUrl = URL.createObjectURL(blob);");
-        contenido.append("\n\t\t\t\t\t if (filename) {");
-        contenido.append("\n\t\t\t\t\t // use HTML5 a[download] attribute to specify filename");
-        contenido.append("\n\t\t\t\t\t var a = document.createElement(\"a\");");
-        contenido.append("\n\t\t\t\t\t //safari no soporta esto todavia");
-        contenido.append("\n\t\t\t\t\t a.href = downloadUrl;");
-        contenido.append("\n\t\t\t\t\t a.download = filename;");
-        contenido.append("\n\t\t\t\t\t document.body.appendChild(a);");
-        contenido.append("\n\t\t\t\t\t a.click();");
-        contenido.append("\n\t\t\t\t\t }");
-        contenido.append("\n\t\t\t\t\t setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup");
-        contenido.append("\n\t\t\t\t }");
-        
+        contenido.append("\n\n\t\t\t\t response.responseText = Ext.decode(response.responseText);");
+        contenido.append("\n\t\t\t\t var base64File = response.responseText.archivo;");
+        contenido.append("\n\t\t\t\t window.location.href = window.location.href = 'data:application/vnd.ms-excel;base64,'+base64File; ");     
 
         contenido.append("\n\t\t\t\t Ext.toast({");
-        contenido.append("\n\t\t\t\t\t html: 'Se Descargo exitosamente',");
+        contenido.append("\n\t\t\t\t\t html: 'Descarga exitosa',");
         contenido.append("\n\t\t\t\t\t align: 'tr',");
         contenido.append("\n\t\t\t\t\t slideInDuration: 400,");
         contenido.append("\n\t\t\t\t\t minWidth: 400,");
@@ -587,8 +577,18 @@ public class ConstructFileJS {
         
         contenido.append("\n\n\t\t\t },");
         contenido.append("\n\t\t\t failure: function(response, opt) { ");
-        contenido.append("\n\t\t\t\t console.dir(response); ");
-        contenido.append("\n\t\t\t\t Ext.Msg.alert('Error', response.status); ");
+        contenido.append("\n\t\t\t\t waitModal.hide();");
+        
+        contenido.append("\n\t\t\t\t Ext.toast({");
+        contenido.append("\n\t\t\t\t\t html : '<div style=\"background: white; color: #ED3237\">No se pudieron exportar los datos</div>',");
+        contenido.append("\n\t\t\t\t\t align: 'tr',");
+        contenido.append("\n\t\t\t\t\t slideInDuration: 400,");
+        contenido.append("\n\t\t\t\t\t minWidth: 400,");
+        contenido.append("\n\t\t\t\t\t iconCls: 'x-fa fa-bullhorn',");
+        contenido.append("\n\t\t\t\t\t title: 'Notificación Sistema',");
+        contenido.append("\n\t\t\t\t\t closable: true");
+        contenido.append("\n\t\t\t\t });");
+        
         contenido.append("\n\t\t\t }");
         contenido.append("\n\t\t });");
         contenido.append("\n\n\t }, ");
