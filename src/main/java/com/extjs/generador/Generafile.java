@@ -2,7 +2,10 @@ package com.extjs.generador;
 
 import com.extjs.generador.ColumnType;
 import com.extjs.generador.ConstructFileJS;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -137,34 +140,34 @@ public class Generafile {
         String contentFileGridPanel = ConstructFileJS.createGridPanel(modulo, fileTocreate, list, prefix);
         String contentFileWidget = ConstructFileJS.createWidget(modulo, fileTocreate, list, prefix);
         
-        FileWriter ficheroFormulario = null;
-        FileWriter ficheroGridPanel = null;
-        FileWriter ficheroWidget = null;
-        PrintWriter pwFormulario = null;
-        PrintWriter pwGridPanel = null;
-        PrintWriter pwWidget = null;
+        Writer ficheroFormulario = null;
+        Writer ficheroGridPanel = null;
+        Writer ficheroWidget = null;
         
         try {
         
-        	ficheroFormulario = new FileWriter(destino + File.separator + fileTocreate + "Formulario.js");
-            pwFormulario = new PrintWriter(ficheroFormulario);
-            pwFormulario.println(contentFileFormulario);
+        	ficheroFormulario = new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate + "Formulario.js"), "UTF-8"));
+        	
+            ficheroFormulario.write(contentFileFormulario);
             
             if (ficheroFormulario != null) {
                 ficheroFormulario.close();
             }
             
-            ficheroGridPanel = new FileWriter(destino + File.separator + fileTocreate + "GridPanel.js");
-            pwGridPanel = new PrintWriter(ficheroGridPanel);
-            pwGridPanel.println(contentFileGridPanel);
+            ficheroGridPanel =   new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate + "GridPanel.js"), "UTF-8"));
+            
+            ficheroGridPanel.write(contentFileGridPanel);
             
             if (ficheroGridPanel != null) {
                 ficheroGridPanel.close();
             }
             
-            ficheroWidget = new FileWriter(destino + File.separator + fileTocreate + "WidgetView.js");
-            pwWidget = new PrintWriter(ficheroWidget);
-            pwWidget.println(contentFileWidget);
+            ficheroWidget =  new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate + "WidgetView.js"), "UTF-8"));
+             
+            ficheroWidget.write(contentFileWidget);
             
             if (ficheroWidget != null) {
                 ficheroWidget.close();
@@ -181,13 +184,13 @@ public class Generafile {
     private static void createModelFile(String modulo, String destino, String fileTocreate, List<ColumnType> list) {
     	
         String contentFile = ConstructFileJS.createModel(modulo, fileTocreate, list);
-        OutputStreamWriter fichero = null;
-        PrintWriter pw = null;
+        Writer fichero = null;
         
         try {
-            fichero = new FileWriter(destino + File.separator + fileTocreate + "Model.js");
-            pw = new PrintWriter(fichero);
-            pw.println(contentFile);
+            fichero =   new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate + "Model.js"), "UTF-8"));
+            
+            fichero.write(contentFile);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -210,13 +213,13 @@ public class Generafile {
     private static void createStoreFile(String modulo, String destino, String fileTocreate, String servicio) {
     	
         String contentFile = ConstructFileJS.createStore(modulo, fileTocreate, servicio);
-        OutputStreamWriter fichero = null;
-        PrintWriter pw = null;
-        
+        Writer fichero = null;
+              
         try {
-            fichero = new FileWriter(destino + File.separator + fileTocreate + "Store.js");
-            pw = new PrintWriter(fichero);
-            pw.println(contentFile);
+            fichero = new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate + "Store.js"), "UTF-8"));
+            
+            fichero.write(contentFile);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -246,12 +249,13 @@ public class Generafile {
             return;
         }
         
-        OutputStreamWriter fichero = null;
-        PrintWriter pw = null;
+        Writer fichero = null;
+        
         try {
-            fichero = new FileWriter(destino + File.separator + controllerName);
-            pw = new PrintWriter(fichero);
-            pw.println(contentFile);
+            fichero = new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + controllerName), "UTF-8"));
+             
+            fichero.write(contentFile);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -274,13 +278,13 @@ public class Generafile {
     private static void createViewModelFile(String modulo, String destino, String fileTocreate, String prefix) {
     	
         String contentFile = ConstructFileJS.createViewModel(modulo, fileTocreate, prefix);
-        OutputStreamWriter fichero = null;
-        PrintWriter pw = null;
+        Writer fichero = null;
         
         try {
-            fichero = new FileWriter(destino + File.separator + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel.js");
-            pw = new PrintWriter(fichero);
-            pw.println(contentFile);
+            fichero = new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel.js"), "UTF-8"));
+             
+            fichero.write(contentFile);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -303,13 +307,13 @@ public class Generafile {
     private static void createViewControllerFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
     	
         String contentFile = ConstructFileJS.createViewController(modulo, fileTocreate, list, prefix, servicio);
-        OutputStreamWriter fichero = null;
-        PrintWriter pw = null;
+        Writer fichero = null;
         
         try {
-            fichero = new FileWriter(destino + File.separator + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController.js");
-            pw = new PrintWriter(fichero);
-            pw.println(contentFile);
+            fichero = new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController.js"), "UTF-8"));
+             
+            fichero.write(contentFile);
         }
         catch (Exception e) {
             e.printStackTrace();

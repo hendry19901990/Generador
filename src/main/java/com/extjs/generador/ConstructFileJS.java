@@ -225,7 +225,7 @@ public class ConstructFileJS {
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
         
-        boolean isDate = false;
+        
         
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + gridPanelName + "', {");
         contenido.append("\n \t extend: 'Ext.grid.Panel', ");
@@ -249,6 +249,8 @@ public class ConstructFileJS {
         if (list != null) {
         	int i=0;
             for (ColumnType columna : list) {
+            	
+            	boolean isDate = false;
             	
             	String filter = "";
             	
@@ -278,7 +280,7 @@ public class ConstructFileJS {
             		contenido.append("\n \t\t {");
             		contenido.append("\n \t\t\t text:'"+texto+ "', ");
             		contenido.append("\n \t\t\t xtype: 'datecolumn',");
-            		contenido.append("\n \t\t\t format: 'd-m-Y H',");
+            		contenido.append("\n \t\t\t format: 'd-m-Y H:i:s',");
             		contenido.append("\n \t\t\t filter: {");
             		contenido.append("\n \t\t\t\t type:'date',");
             		contenido.append("\n \t\t\t\t fields:{");
@@ -288,8 +290,7 @@ public class ConstructFileJS {
             		contenido.append("\n \t\t\t\t }");
             		contenido.append("\n \t\t\t },");
             		contenido.append("\n \t\t\t dataIndex:'" + columna.getName() + "', ");
-            		contenido.append("\n \t\t\t flex: 1,");
-            		contenido.append("\n \t\t\t format: 'd-m-Y H'");
+            		contenido.append("\n \t\t\t flex: 1");
             		contenido.append("\n \t\t }");
             		
             	}else{
@@ -555,7 +556,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t method: 'POST',");
         contenido.append("\n\t\t\t params: Ext.encode(parameters),");
         contenido.append("\n\t\t\t headers: {");
-        contenido.append("\n\t\t\t\t 'Content-Type' : 'application/vnd.ms-excel',");
+        contenido.append("\n\t\t\t\t 'Content-Type' : 'application/vnd.ms-excel'");
        // contenido.append("\n\t\t\t\t 'Content-Disposition' : 'attachment'");
         contenido.append("\n\t\t\t },");
         contenido.append("\n\t\t\t success: function(response, opt) { ");
