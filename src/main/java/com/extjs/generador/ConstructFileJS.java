@@ -29,9 +29,9 @@ public class ConstructFileJS {
     public static String createController(String modulo, String fileTocreate) {
         
     	StringBuffer contenido = new StringBuffer();
-        String modelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
+       // String modelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
         String controllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Controller";
-        String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Store";
+      //  String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Store";
         
         contenido.append("Ext.define('" + modulo + ".controller." + controllerName + "', {");
         contenido.append("\n\t extend: 'Ext.app.Controller', ");
@@ -48,7 +48,7 @@ public class ConstructFileJS {
     	StringBuffer contenido = new StringBuffer();
         String storeName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Store";
         String modelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
-        String tablaName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
+       // String tablaName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         
         contenido.append("Ext.define('" + modulo + ".store." + storeName + "', {");
         contenido.append("\n\t extend: 'Ext.data.Store', ");
@@ -56,28 +56,22 @@ public class ConstructFileJS {
         contenido.append("\n\n\t model: '" + modulo + ".model." + modelName + "', ");
         contenido.append("\n\t alias: 'store." + storeName + "', ");
         contenido.append("\n\t storeId: '" + storeName + "', ");
-        contenido.append("\n\t pageSize:50, \n\t autoLoad: true,");
-        contenido.append("\n\n\t proxy: { ");
-        contenido.append("\n \t\t timeout:30000,");
-        contenido.append("\n \t\t type: 'ajax', \n \t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/listAll',");
-        contenido.append(" \n \t\t reader: { ");
-        //contenido.append("\n \t\t\t type: 'json'");
-        contenido.append("\n \t\t\t type: 'json', \n \t\t\t rootProperty: 'data' ");
-        contenido.append("\n \t\t }, ");
-        contenido.append("\n \t\t afterRequest: function(request, success){");
-        contenido.append("\n \t\t\t if(!success){");
-        contenido.append("\n \t\t\t\t Ext.toast({");
-        contenido.append("\n \t\t\t\t\t html: '<div style=\"background: white; color: red\">No se pudieron cargar los datos</div>',");
-        contenido.append("\n \t\t\t\t\t align: 'tr',");
-        contenido.append("\n \t\t\t\t\t slideInDuration: 400,");
-        contenido.append("\n \t\t\t\t\t minWidth: 400,");
-        contenido.append("\n \t\t\t\t\t iconCls: 'x-fa fa-bullhorn',");
-        contenido.append("\n \t\t\t\t\t title: 'Notificación del sistema',");
-        contenido.append("\n \t\t\t\t\t closable: true");
-        contenido.append("\n \t\t\t\t });");
-        contenido.append("\n \t\t\t }");
-        contenido.append("\n \t\t } ");
-        contenido.append("\n \t } ");
+        contenido.append("\n\n\t constructor: function(cfg) { ");
+        contenido.append("\n\t\t var me = this;");
+        contenido.append("\n\t\t cfg = cfg || {};");
+        contenido.append("\n\t\t me.callParent([Ext.apply({");
+        contenido.append("\n\t\t\t pageSize: "+modulo+".app.constants.PAGE_SIZE,");
+        contenido.append("\n\t\t\t storeId: '" + storeName + "', ");
+        contenido.append("\n\t\t\t autoLoad: true,");
+        contenido.append("\n\t\t\t proxy: {");
+        contenido.append("\n\t\t\t\t type: 'memory',");
+        contenido.append("\n\t\t\t\t enablePaging: true,");
+        contenido.append("\n\t\t\t\t reader: {");
+        contenido.append("\n\t\t\t\t\t  type: 'json'");
+        contenido.append("\n\t\t\t\t }");
+        contenido.append("\n\t\t\t }");
+        contenido.append("\n\t\t }, cfg)]);");
+        contenido.append("\n\n\t } ");
         contenido.append("\n\n});");
         
         return contenido.toString();
@@ -236,13 +230,14 @@ public class ConstructFileJS {
         contenido.append("\n\t\t 'Ext.util.*',");
         contenido.append("\n\t\t 'Ext.grid.filters.Filters',");
         contenido.append("\n\t\t 'Ext.toolbar.Paging',");
+        contenido.append("\n\t\t 'Ext.ux.ProgressBarPager',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
         contenido.append("\n\t ],");
         contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
         contenido.append("\n\t plugins: 'gridfilters',");
-        //contenido.append("\n \t title: '" + gridPanelName + "', ");
+        contenido.append("\n\t width: '100%', ");
         contenido.append("\n \t bind: {   store: '{" + storeRequire + "}' }, ");
         contenido.append("\n \t columns: [  ");
         
@@ -306,19 +301,7 @@ public class ConstructFileJS {
                 i++;
             }
             
-            /*
-            contenido.append("\n \t\t {");
-            contenido.append("\n \t\t\t xtype:'actioncolumn', ");
-            contenido.append("\n \t\t\t flex: 1, ");
-            contenido.append("\n \t\t\t text:'Accion Eliminar', ");
-            contenido.append("\n \t\t\t items: [{ ");
-            contenido.append("\n \t\t\t\t iconCls: 'fa-remove', ");
-            contenido.append("\n \t\t\t\t tooltip: 'Eliminar', ");
-            contenido.append("\n \t\t\t\t altText: 'Eliminar', ");
-            contenido.append("\n \t\t\t\t handler: 'onDelete' ");
-            contenido.append("\n \t\t\t }] ");
-            contenido.append("\n \t\t }");
-            */
+
         }
         
         contenido.append("\n \t ], ");
@@ -328,20 +311,37 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t listeners:{ click:'newRecord'},");
         contenido.append("\n\t\t\t iconCls : 'x-fa fa-plus-square-o'");
         contenido.append("\n\t\t }, ");
-        //contenido.append("\n\t\t  '->', ");
         contenido.append("\n\t\t { ");
         contenido.append("\n\t\t\t text: 'Exportar a Excel', ");
         contenido.append("\n\t\t\t listeners : { click:'onExportExcel'}, ");
         contenido.append("\n\t\t\t iconCls : 'x-fa fa-file-excel-o' ");
-        contenido.append("\n\t\t } ");
+        contenido.append("\n\t\t }, ");
+        contenido.append("\n\t\t '->', ");
+        contenido.append("\n\t\t {");
+        contenido.append("\n\t\t\t xtype: 'toolbar',");
+        contenido.append("\n\t\t\t ui: 'header',");
+        contenido.append("\n\t\t\t docked: 'top',");
+        contenido.append("\n\t\t\t fixed: true,");
+        contenido.append("\n\t\t\t items: [");
+        contenido.append("\n\t\t\t\t {");
+        contenido.append("\n\t\t\t\t\t xtype: 'pagingtoolbar',");
+        contenido.append("\n\t\t\t\t\t pageSize: " + modulo + ".app.constants.PAGE_SIZE,");
+        contenido.append("\n\t\t\t\t\t width: '100%',");
+        contenido.append("\n\t\t\t\t\t displayInfo: true,");
+        contenido.append("\n\t\t\t\t\t bind: { store: '{" + storeRequire + "}' }, // Viene del viewModel");
+        contenido.append("\n\t\t\t\t\t plugins: new Ext.ux.ProgressBarPager(),");
+        contenido.append("\n\t\t\t\t\t listeners: {");
+        contenido.append("\n\t\t\t\t\t\t beforechange: {");
+        contenido.append("\n\t\t\t\t\t\t\t fn: 'loadData'");
+        contenido.append("\n\t\t\t\t\t\t }");
+        contenido.append("\n\t\t\t\t\t }");
+        contenido.append("\n\t\t\t\t }");
+        contenido.append("\n\t\t\t ]");
+        contenido.append("\n\t\t }");
         contenido.append("\n \t ], ");
         
-        /*
-        contenido.append("\n \t bbar: {  ");
-        contenido.append("\n\t\t xtype: 'pagingtoolbar', \n\t\t pageSize: 10, \n\t\t displayInfo: true,\n\t\t bind:{ store: '{" + storeRequire + "}' }");
-        contenido.append("\n \t }, ");*/
         
-        contenido.append("\n\t listeners: {  itemdblclick: 'onItemSelected' } ");
+        contenido.append("\n\t listeners: {  itemclick: 'onItemSelected' } ");
         contenido.append("\n});");
         
         return contenido.toString();
@@ -352,7 +352,6 @@ public class ConstructFileJS {
         StringBuffer contenido = new StringBuffer();
         String formularioName = fileTocreate + "window";
         String formularioTitle = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
-       // int heightWindow = list != null ? (list.size() + 1) * 50 : 0;
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
         
@@ -361,7 +360,6 @@ public class ConstructFileJS {
         contenido.append("\n \t extend: 'Ext.window.Window', ");
         contenido.append("\n \t alias: 'widget." + formularioName + "', ");
         contenido.append("\n\t title: '"+formularioTitle+"', \n\t width: 400,");
-        //contenido.append("\n\t height: " + heightWindow + ", ");
         contenido.append("\n\n\t requires: [ ");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
@@ -387,7 +385,7 @@ public class ConstructFileJS {
                 
                 if(columna.isIsprimarykey()){
                 	
-                	String blanco =  ", disabled: true";
+                	//String blanco =  ", disabled: true";
                 	contenido.append("\n \t\t\t {name:'" + columna.getName() + "', editable: false, xtype:'textfield'"+ ", anchor:'100%', fieldLabel:'" + columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1) + "'} ");
                 	//contenido.append("\n \t\t\t {name:'" + columna.getName() +"_pk'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'} ");
                     
@@ -467,6 +465,37 @@ public class ConstructFileJS {
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "', {");
         contenido.append("\n \t extend: 'Ext.app.ViewController', ");
         contenido.append("\n \t alias: 'controller." + prefix + "." + "controller" + "." + viewControllerName + "', ");
+        
+        /* loadData */
+        contenido.append("\n\n\t loadData: function(){");
+        contenido.append("\n\n\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
+        contenido.append("\n\n\t\t var viewController = this;");
+        contenido.append("\n\t\t Ext.Ajax.request({ ");
+        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/GenadminOp/" + storeRequire.toLowerCase() + "/listAll',");
+        contenido.append("\n\t\t\t method: 'GET',");
+        contenido.append("\n\t\t\t timeout: Genesis.app.constants.TIMEOUT,");
+        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, ");
+        contenido.append("\n\t\t\t params: {}, ");
+        contenido.append("\n\t\t\t success: function(response, opt) {  ");
+        contenido.append("\n\t\t\t\t response.responseText = Ext.decode(response.responseText);");
+        contenido.append("\n\t\t\t\t console.dir(response.responseText);");
+        contenido.append("\n\n\t\t\t\t " + storeNameVar + ".getProxy().setData(response.responseText);");
+        contenido.append("\n\t\t\t\t " + storeNameVar + ".load()");
+        contenido.append("\n\t\t\t\t console.log('OKOKOK');");
+        contenido.append("\n\t\t\t\t console.dir(viewController.getView());");
+        contenido.append("\n\t\t\t },");
+        contenido.append("\n\t\t\t failure: function(response, opt) { ");
+        contenido.append("\n\t\t\t\t " + modulo + ".app.getController('BasController').notifyError('No se pudieron cargar los datos');");
+        contenido.append("\n\t\t\t }");
+        contenido.append("\n\t\t });");
+        contenido.append("\n\n\t }, ");
+        /* loadData */
+        
+        /* init */
+        contenido.append("\n\n\t init: function(view){");
+        contenido.append("\n\t\t this.loadData();");
+        contenido.append("\n\n\t },");
+        /* init */
         
         /* newRecord */
         contenido.append("\n\n\t newRecord: function(){ ");
@@ -566,35 +595,20 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t var base64File = response.responseText.archivo;");
         contenido.append("\n\t\t\t\t window.location.href = window.location.href = 'data:application/vnd.ms-excel;base64,'+base64File; ");     
 
-        contenido.append("\n\t\t\t\t Ext.toast({");
-        contenido.append("\n\t\t\t\t\t html: 'Descarga exitosa',");
-        contenido.append("\n\t\t\t\t\t align: 'tr',");
-        contenido.append("\n\t\t\t\t\t slideInDuration: 400,");
-        contenido.append("\n\t\t\t\t\t minWidth: 400,");
-        contenido.append("\n\t\t\t\t\t iconCls: 'x-fa fa-bullhorn',");
-        contenido.append("\n\t\t\t\t\t title: 'Notificación Sistema',");
-        contenido.append("\n\t\t\t\t\t closable: true");
-        contenido.append("\n\t\t\t\t });");
+        contenido.append("\n\t\t\t\t " + modulo + ".app.getController('BasController').notifySuccess('Descarga exitosa');");
         
         contenido.append("\n\n\t\t\t },");
         contenido.append("\n\t\t\t failure: function(response, opt) { ");
         contenido.append("\n\t\t\t\t waitModal.hide();");
         
-        contenido.append("\n\t\t\t\t Ext.toast({");
-        contenido.append("\n\t\t\t\t\t html : '<div style=\"background: white; color: #ED3237\">No se pudieron exportar los datos</div>',");
-        contenido.append("\n\t\t\t\t\t align: 'tr',");
-        contenido.append("\n\t\t\t\t\t slideInDuration: 400,");
-        contenido.append("\n\t\t\t\t\t minWidth: 400,");
-        contenido.append("\n\t\t\t\t\t iconCls: 'x-fa fa-bullhorn',");
-        contenido.append("\n\t\t\t\t\t title: 'Notificación Sistema',");
-        contenido.append("\n\t\t\t\t\t closable: true");
-        contenido.append("\n\t\t\t\t });");
+        contenido.append("\n\t\t\t\t " + modulo + ".app.getController('BasController').notifyError('No se pudieron exportar los datos');");
         
         contenido.append("\n\t\t\t }");
         contenido.append("\n\t\t });");
         contenido.append("\n\n\t }, ");
         /* onExportExcel */
         
+        /* onDelete */
         contenido.append("\n\n\t onDelete: function(button, e, eOpts) {  ");
         contenido.append("\n\n\t\t Ext.Msg.confirm('Eliminar','¿Seguro que desea continuar?',function(buttonId, value){");
         contenido.append("\n\n\t\t\t if (buttonId === 'yes'){");
@@ -608,13 +622,14 @@ public class ConstructFileJS {
         contenido.append("\n\n\t\t\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
         contenido.append("\n\t\t\t\t var ventana = button.up('toolbar').up('form').up('window');");
         contenido.append("\n\t\t\t\t var form = ventana.down('form').getForm();");
+        contenido.append("\n\t\t\t\t var viewController = this;");
         contenido.append("\n\t\t\t\t Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t\t\t method: 'DELETE',");
         contenido.append("\n\t\t\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t\t\t params: Ext.encode({"+recordToDel+"}),  ");
         //contenido.append("\n\t\t\t\t\t waitMsg:'Espere un momento Por favor..',");
         contenido.append("\n\t\t\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
-        contenido.append("\n\t\t\t\t\t\t " + storeNameVar + ".load();  ");
+        contenido.append("\n\t\t\t\t\t\t viewController.loadData();");
         contenido.append("\n\t\t\t\t\t }, ");
         contenido.append("\n\t\t\t\t\t failure: function(response, opt) {   ");
         contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
@@ -626,7 +641,9 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t }");
         contenido.append("\n\n\t\t }, this);");
         contenido.append("\n\n\t }, ");
+        /* onDelete */
         
+        /* onSave */
         contenido.append("\n\n\t onSave: function(button, e, eOpts) { ");
         contenido.append("\n\n\t\t var waitModal = Ext.MessageBox.show({");
         contenido.append("\n\t\t\t msg: 'Enviando, espere un momento por favor...',");
@@ -638,6 +655,7 @@ public class ConstructFileJS {
         contenido.append("\n\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
         contenido.append("\n\t\t  var ventana = button.up('toolbar').up('form').up('window');");
         contenido.append("\n\t\t  var form = ventana.down('form').getForm();");
+        contenido.append("\n\t\t  var viewController = this;");
         contenido.append("\n\n\t\t if (form.isValid()) {");
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t\t method: 'POST',");
@@ -647,16 +665,8 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t waitModal.hide();");
         contenido.append("\n\n\t\t\t\t button.up('form').up('window').hide();");
         //contenido.append("\n\t\t\t\t Ext.Msg.alert('Notificacion', 'Se Guardo Satisfactoriamente');");
-        contenido.append("\n\n\t\t\t\t Ext.toast({");
-        contenido.append("\n\t\t\t\t\t html: 'Se ha guardado exitosamente',");
-        contenido.append("\n\t\t\t\t\t align: 'tr',");
-        contenido.append("\n\t\t\t\t\t slideInDuration: 400,");
-        contenido.append("\n\t\t\t\t\t minWidth: 400,");
-        contenido.append("\n\t\t\t\t\t iconCls: 'x-fa fa-bullhorn',");
-        contenido.append("\n\t\t\t\t\t title: 'Notificación Sistema',");
-        contenido.append("\n\t\t\t\t\t closable: true");
-        contenido.append("\n\t\t\t\t });");
-        contenido.append("\n\n\t\t\t\t " + storeNameVar + ".load();");
+        contenido.append("\n\n\t\t\t\t " + modulo + ".app.getController('BasController').notifySuccess('Se ha guardado exitosamente');");
+        contenido.append("\n\n\t\t\t\t viewController.loadData();");
         contenido.append("\n\t\t\t }, ");
         contenido.append("\n\t\t\t failure: function(response, opt) {  ");
         contenido.append("\n\t\t\t\t waitModal.hide();");
@@ -664,14 +674,10 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t } ");
         contenido.append("\n\t\t  });");
         contenido.append("\n\n\t\t }else{");
-        contenido.append("\n\t\t\t Ext.toast({");
-        contenido.append("\n\t\t\t\t html: 'Datos de formulario inválido', \n\t\t\t\t align: 'tr',");
-        contenido.append("\n\t\t\t\t slideInDuration: 400,\n\t\t\t\t minWidth: 400,");
-        contenido.append("\n\t\t\t\t iconCls: 'x-fa fa-bullhorn',\n\t\t\t\t title: 'Notificación Sistema',");
-        contenido.append("\n\t\t\t\t closable: true");
-        contenido.append("\n\t\t\t });");
+        contenido.append("\n\t\t\t " + modulo + ".app.getController('BasController').notifyError('Datos de formulario inválido');");
         contenido.append("\n\n\t\t }");
         contenido.append("\n\t } ");
+        /* onSave */
         
         contenido.append("\n});");
         
