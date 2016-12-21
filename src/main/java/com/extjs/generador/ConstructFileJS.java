@@ -52,7 +52,11 @@ public class ConstructFileJS {
         
         contenido.append("Ext.define('" + modulo + ".store." + storeName + "', {");
         contenido.append("\n\t extend: 'Ext.data.Store', ");
-        contenido.append("\n\t requires: [ '" + modulo + ".model." + modelName + "' ], ");
+        contenido.append("\n\t requires: [ ");
+        contenido.append("\n\t\t '" + modulo + ".model." + modelName + "', ");
+        contenido.append("\n\t\t 'Ext.data.proxy.Memory',");
+        contenido.append("\n\t\t 'Ext.data.reader.Json' ");
+        contenido.append("\n\t ], ");
         contenido.append("\n\n\t model: '" + modulo + ".model." + modelName + "', ");
         contenido.append("\n\t alias: 'store." + storeName + "', ");
         contenido.append("\n\t storeId: '" + storeName + "', ");
