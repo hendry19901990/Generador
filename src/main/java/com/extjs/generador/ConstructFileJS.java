@@ -56,6 +56,8 @@ public class ConstructFileJS {
         contenido.append("\n\n\t model: '" + modulo + ".model." + modelName + "', ");
         contenido.append("\n\t alias: 'store." + storeName + "', ");
         contenido.append("\n\t storeId: '" + storeName + "', ");
+        contenido.append("\n\t remoteSort: true,");
+        contenido.append("\n\t remoteFilter: true,");
         contenido.append("\n\n\t constructor: function(cfg) { ");
         contenido.append("\n\t\t var me = this;");
         contenido.append("\n\t\t cfg = cfg || {};");
@@ -275,7 +277,7 @@ public class ConstructFileJS {
             		contenido.append("\n \t\t {");
             		contenido.append("\n \t\t\t text:'"+texto+ "', ");
             		contenido.append("\n \t\t\t xtype: 'datecolumn',");
-            		contenido.append("\n \t\t\t format: 'd-m-Y H:i:s',");
+            		contenido.append("\n \t\t\t format: 'Y-m-d H:i:s',");
             		contenido.append("\n \t\t\t filter: {");
             		contenido.append("\n \t\t\t\t type:'date',");
             		contenido.append("\n \t\t\t\t fields:{");
@@ -380,7 +382,7 @@ public class ConstructFileJS {
                 } else if (columna.getType().equalsIgnoreCase("NUMBER") || columna.getType().equalsIgnoreCase("FLOAT") || columna.getType().equalsIgnoreCase("DECIMAL") || columna.getType().equalsIgnoreCase("Floating-Point") || columna.getType().equalsIgnoreCase("BINARY_FLOAT") || columna.getType().equalsIgnoreCase("BINARY_DOUBLE")) {
                     tipo = "'numberfield'";
                 } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || columna.getType().equalsIgnoreCase("DATE")) {
-                    tipo = "'datefield', submitFormat: 'U000', format:'d-m-Y'";
+                    tipo = "'datefield', submitFormat: 'Y-m-d H:i:s', format:'d-m-Y'";
                 }
                 
                 if(columna.isIsprimarykey()){
