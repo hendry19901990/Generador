@@ -234,7 +234,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t 'Ext.data.*',");
         contenido.append("\n\t\t 'Ext.grid.*',");
         contenido.append("\n\t\t 'Ext.util.*',");
-        contenido.append("\n\t\t 'Ext.grid.filters.Filters',");
+       // contenido.append("\n\t\t 'Ext.grid.filters.Filters',");
         contenido.append("\n\t\t 'Ext.toolbar.Paging',");
         contenido.append("\n\t\t 'Ext.ux.ProgressBarPager',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
@@ -334,7 +334,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t\t pageSize: " + modulo + ".app.constants.PAGE_SIZE,");
         contenido.append("\n\t\t\t\t\t width: '100%',");
         contenido.append("\n\t\t\t\t\t displayInfo: true,");
-        contenido.append("\n\t\t\t\t\t bind: { store: '{" + storeRequire + "}' }, // Viene del viewModel");
+        contenido.append("\n\t\t\t\t\t bind: { store: '{" + storeRequire + "}' },");
         contenido.append("\n\t\t\t\t\t plugins: new Ext.ux.ProgressBarPager(),");
         contenido.append("\n\t\t\t\t\t listeners: {");
         contenido.append("\n\t\t\t\t\t\t beforechange: {");
@@ -550,15 +550,9 @@ public class ConstructFileJS {
         /* onExportExcel */
         contenido.append("\n\n\t onExportExcel: function(button, e, eOpts) { ");
         contenido.append("\n\n\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
-        contenido.append("\n\n\t\t var waitModal = Ext.MessageBox.show({");
-        contenido.append("\n\t\t\t msg: 'Enviando, espere un momento por favor...',");
-        contenido.append("\n\t\t\t progressText: 'Exportando a Excell...',");
-        contenido.append("\n\t\t\t width: 400,");
-        contenido.append("\n\t\t\t wait: { interval: 200 },");
-        contenido.append("\n\t\t\t animateTarget: button");
-        contenido.append("\n\t\t  });");
+        contenido.append("\n\t\t var waitModal = "+modulo+".app.getController('BasController').createModal('Exportandos datos', button);   ");
         
-        contenido.append("\n\n\t\t var dataToVector = [];");
+        contenido.append("\n\t\t var dataToVector = [];");
         contenido.append("\n\t\t var i = 0;");
         
         dataToExportExcell.append("\n\n\t\t var parameters = {");
@@ -584,8 +578,13 @@ public class ConstructFileJS {
         dataToExportExcell.append("\n\n\t\t};");
         
         contenido.append("\n\n\t\t if(" + storeNameVar + ".data.length>0){");
-        contenido.append("\n\n\t\t\t for(i=0;i<" + storeNameVar + ".data.length;i++){");
-        contenido.append("\n\n\t\t\t\t dataToVector.push({"+constructArrayExcell.toString()+" \n\t\t\t\t });");
+        contenido.append("\n\t\t\t  var pageSize = " + storeNameVar + ".pageSize; ");
+        contenido.append("\n\t\t\t  var totalCount = " + storeNameVar + ".totalCount;");
+        contenido.append("\n\n\t\t\t for (var j = 0; j<((totalCount/pageSize)+1); j++) {");
+        contenido.append("\n\n\t\t\t\t " + storeNameVar + ".loadPage(j);");
+        contenido.append("\n\n\t\t\t\t for(i=0;i<" + storeNameVar + ".data.length;i++){");
+        contenido.append("\n\n\t\t\t\t\t dataToVector.push({"+constructArrayExcell.toString()+" \n\t\t\t\t });");
+        contenido.append("\n\n\t\t\t\t }");
         contenido.append("\n\n\t\t\t }");
         contenido.append("\n\n\t\t }");
         
@@ -624,13 +623,7 @@ public class ConstructFileJS {
         contenido.append("\n\n\t onDelete: function(button, e, eOpts) {  ");
         contenido.append("\n\n\t\t Ext.Msg.confirm('Eliminar','¿Seguro que desea continuar?',function(buttonId, value){");
         contenido.append("\n\n\t\t\t if (buttonId === 'yes'){");
-        contenido.append("\n\n\t\t\t\t var waitModal = Ext.MessageBox.show({");
-        contenido.append("\n\t\t\t\t\t msg: 'Enviando, espere un momento por favor...',");
-        contenido.append("\n\t\t\t\t\t progressText: 'Ingresando...',");
-        contenido.append("\n\t\t\t\t\t width: 400,");
-        contenido.append("\n\t\t\t\t\t wait: { interval: 200 },");
-        contenido.append("\n\t\t\t\t\t animateTarget: button");
-        contenido.append("\n\t\t\t\t   });");
+        contenido.append("\n\t\t\t\t var waitModal = "+modulo+".app.getController('BasController').createModal('Procesando...', button);");
         contenido.append("\n\n\t\t\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
         contenido.append("\n\t\t\t\t var ventana = button.up('toolbar').up('form').up('window');");
         contenido.append("\n\t\t\t\t var form = ventana.down('form').getForm();");
@@ -657,14 +650,8 @@ public class ConstructFileJS {
         
         /* onSave */
         contenido.append("\n\n\t onSave: function(button, e, eOpts) { ");
-        contenido.append("\n\n\t\t var waitModal = Ext.MessageBox.show({");
-        contenido.append("\n\t\t\t msg: 'Enviando, espere un momento por favor...',");
-        contenido.append("\n\t\t\t progressText: 'Ingresando...',");
-        contenido.append("\n\t\t\t width: 400,");
-        contenido.append("\n\t\t\t wait: { interval: 200 },");
-        contenido.append("\n\t\t\t animateTarget: button");
-        contenido.append("\n\t\t   });");
-        contenido.append("\n\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
+        contenido.append("\n\n\t\t  var waitModal = "+modulo+".app.getController('BasController').createModal('Enviando, espere un momento por favor...', button);");
+        contenido.append("\n\t\t  var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
         contenido.append("\n\t\t  var ventana = button.up('toolbar').up('form').up('window');");
         contenido.append("\n\t\t  var form = ventana.down('form').getForm();");
         contenido.append("\n\t\t  var viewController = this;");
