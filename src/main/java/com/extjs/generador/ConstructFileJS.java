@@ -356,7 +356,7 @@ public class ConstructFileJS {
     public static String createFormulario(String modulo, String fileTocreate, List<ColumnType> list, String prefix) {
     	
         StringBuffer contenido = new StringBuffer();
-        String formularioName = fileTocreate + "window";
+        String formularioName = fileTocreate + "Window";
         String formularioTitle = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
@@ -462,7 +462,7 @@ public class ConstructFileJS {
         StringBuffer dataToExportExcell = new StringBuffer();
         StringBuffer constructArrayExcell = new StringBuffer();
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
-        String formularioName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "window";
+        String formularioName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Window";
         String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         String modelName = modulo + ".model." + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
         String storeNameVar = "store" + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
@@ -550,7 +550,7 @@ public class ConstructFileJS {
         /* onExportExcel */
         contenido.append("\n\n\t onExportExcel: function(button, e, eOpts) { ");
         contenido.append("\n\n\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
-        contenido.append("\n\t\t var waitModal = "+modulo+".app.getController('BasController').createModal('Exportandos datos', button);   ");
+        contenido.append("\n\t\t var waitModal = "+modulo+".app.getController('BasController').createModal('Exportando a Excel...', button);   ");
         
         contenido.append("\n\t\t var dataToVector = [];");
         contenido.append("\n\t\t var i = 0;");
