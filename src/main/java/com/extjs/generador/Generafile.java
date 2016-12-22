@@ -6,10 +6,10 @@ import com.extjs.generador.ConstructFileJS;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+//import java.io.FileWriter;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+//import java.io.PrintStream;
+//import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -138,11 +138,11 @@ public class Generafile {
     	
         String contentFileFormulario = ConstructFileJS.createFormulario(modulo, fileTocreate, list, prefix);
         String contentFileGridPanel = ConstructFileJS.createGridPanel(modulo, fileTocreate, list, prefix);
-        String contentFileWidget = ConstructFileJS.createWidget(modulo, fileTocreate, list, prefix);
+        //String contentFileWidget = ConstructFileJS.createWidget(modulo, fileTocreate, list, prefix);
         
         Writer ficheroFormulario = null;
         Writer ficheroGridPanel = null;
-        Writer ficheroWidget = null;
+       // Writer ficheroWidget = null;
         
         try {
         
@@ -164,14 +164,15 @@ public class Generafile {
                 ficheroGridPanel.close();
             }
             
+            /*
             ficheroWidget =  new BufferedWriter(new OutputStreamWriter(
         			new FileOutputStream(destino + File.separator + fileTocreate + "WidgetView.js"), "UTF-8"));
              
             ficheroWidget.write(contentFileWidget);
             
-            if (ficheroWidget != null) {
+            if (ficheroWidget != null) 
                 ficheroWidget.close();
-            }
+            */
         }
         catch (Exception e) {
             e.printStackTrace();

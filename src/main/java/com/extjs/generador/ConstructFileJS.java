@@ -370,8 +370,8 @@ public class ConstructFileJS {
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
         contenido.append("\n\t ],");
-        contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
-        contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
+        //contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
+        //contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
         contenido.append("\n\n\t items: [ \n\t{");
         contenido.append("\n\t\t xtype: 'form',");
         contenido.append("\n\t\t bodyPadding: 10,");
@@ -505,6 +505,7 @@ public class ConstructFileJS {
         
         /* newRecord */
         contenido.append("\n\n\t newRecord: function(){ ");
+        contenido.append("\n\t\t Ext.WindowMgr.hideAll();");
         contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
         contenido.append("\n\t\t ventana.controller = this;");
         
@@ -528,18 +529,23 @@ public class ConstructFileJS {
         contenido.append("\n\t }, ");
         /* newRecord */
         
+        /* onItemSelected */
         contenido.append("\n\n\t onItemSelected : function( grid , record , tr , rowIndex , e , eOpts ){ ");
+        contenido.append("\n\t\t Ext.WindowMgr.hideAll();");
         contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
         contenido.append("\n\t\t ventana.controller = this;");
         contenido.append("\n\t\t ventana.down('form').getForm().loadRecord(record); ");
         contenido.append("\n\t\t ventana.show(); ");
         contenido.append("\n\t }, ");
+        /* onItemSelected */
         
+        /* onReset */
         contenido.append("\n\n\t onReset: function(button, e, eOpts) { ");
         contenido.append("\n\t\t var ventana = button.up('toolbar').up('form').up('window');");
         contenido.append("\n\t\t ventana.down('form').getForm().reset();");
         contenido.append("\n\t\t ventana.hide();");
         contenido.append("\n\t }, ");
+        /* onReset */
         
         /* onExportExcel */
         contenido.append("\n\n\t onExportExcel: function(button, e, eOpts) { ");
