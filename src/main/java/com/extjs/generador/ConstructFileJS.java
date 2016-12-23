@@ -273,8 +273,28 @@ public class ConstructFileJS {
             	
             	String texto = columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1);
             	
-            	if(i==0)
+            	if(i==0){
             		contenido.append("\n \t\t {xtype: 'rownumberer'},");
+            		
+            		contenido.append("\n\t\t { ");
+            		contenido.append("\n\t\t\t width: 70,");
+            		contenido.append("\n\t\t\t xtype: 'widgetcolumn',");
+            		contenido.append("\n\t\t\t widget: {");
+            		contenido.append("\n\t\t\t\t width: '100%',");
+            		contenido.append("\n\t\t\t\t xtype: 'button',");
+            		contenido.append("\n\t\t\t\t iconCls: 'x-fa fa-eye',");
+            		contenido.append("\n\t\t\t\t style: 'background:#BDBFC1;border-color:transparent;',");
+            		contenido.append("\n\t\t\t\t text: '',");
+            		contenido.append("\n\t\t\t\t listeners: {");
+            		contenido.append("\n\t\t\t\t\t click: {");
+            		contenido.append("\n\t\t\t\t\t\t fn: 'onSeeDetailItem',");
+            		contenido.append("\n\t\t\t\t\t\t scope: 'controller'");
+            		contenido.append("\n\t\t\t\t\t }");
+            		contenido.append("\n\t\t\t\t }");
+            		contenido.append("\n\t\t\t }");
+            		contenido.append("\n\t\t },");
+            		
+            	}
             	
             	if(isDate){
             		
@@ -347,10 +367,10 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t }");
         contenido.append("\n\t\t\t ]");
         contenido.append("\n\t\t }");
-        contenido.append("\n \t ], ");
+        contenido.append("\n \t ] ");
         
         
-        contenido.append("\n\t listeners: {  itemclick: 'onItemSelected' } ");
+        //contenido.append("\n\t listeners: {  itemclick: 'onItemSelected' } ");
         contenido.append("\n});");
         
         return contenido.toString();
@@ -532,7 +552,19 @@ public class ConstructFileJS {
         contenido.append("\n\t }, ");
         /* newRecord */
         
+        /* onSeeDetailItem */
+        contenido.append("\n\n\t onSeeDetailItem : function(button, e, eOpts) {  ");
+        contenido.append("\n\n\t\t var record = button.getWidgetRecord();");
+        contenido.append("\n\t\t Ext.WindowMgr.hideAll();");
+        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
+        contenido.append("\n\t\t ventana.controller = this;");
+        contenido.append("\n\t\t ventana.down('form').getForm().loadRecord(record);");
+        contenido.append("\n\t\t ventana.show();");
+        contenido.append("\n\n\t }, ");
+        /* onSeeDetailItem */
+        
         /* onItemSelected */
+        /*
         contenido.append("\n\n\t onItemSelected : function( grid , record , tr , rowIndex , e , eOpts ){ ");
         contenido.append("\n\t\t Ext.WindowMgr.hideAll();");
         contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
@@ -540,6 +572,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t ventana.down('form').getForm().loadRecord(record); ");
         contenido.append("\n\t\t ventana.show(); ");
         contenido.append("\n\t }, ");
+        */
         /* onItemSelected */
         
         /* onReset */
