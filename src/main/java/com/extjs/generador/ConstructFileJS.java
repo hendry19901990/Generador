@@ -336,11 +336,14 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t\t displayInfo: true,");
         contenido.append("\n\t\t\t\t\t bind: { store: '{" + storeRequire + "}' },");
         contenido.append("\n\t\t\t\t\t plugins: new Ext.ux.ProgressBarPager(),");
-        contenido.append("\n\t\t\t\t\t listeners: {");
+        contenido.append("\n\t\t\t\t\t doRefresh: function(){");
+        contenido.append("\n\t\t\t\t\t\t this.up().up('panel').getController().loadData();");
+        contenido.append("\n\t\t\t\t\t }");
+       /* contenido.append("\n\t\t\t\t\t listeners: {");
         contenido.append("\n\t\t\t\t\t\t beforechange: {");
         contenido.append("\n\t\t\t\t\t\t\t fn: 'loadData'");
         contenido.append("\n\t\t\t\t\t\t }");
-        contenido.append("\n\t\t\t\t\t }");
+        contenido.append("\n\t\t\t\t\t }");*/
         contenido.append("\n\t\t\t\t }");
         contenido.append("\n\t\t\t ]");
         contenido.append("\n\t\t }");
