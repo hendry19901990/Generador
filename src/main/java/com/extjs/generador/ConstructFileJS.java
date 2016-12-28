@@ -14,7 +14,7 @@ public class ConstructFileJS {
         
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "', {");
         contenido.append("\n\t extend: 'Ext.app.ViewModel', ");
-        contenido.append("\n\t alias: 'viewmodel." + prefix + "." + "model" + "." + viewModelName + "', ");
+        contenido.append("\n\t alias: 'viewmodel." + viewModelName + "', ");
         contenido.append("\n\t requires: [ ");
         contenido.append("\n\t\t //'" + modulo + ".store." + storeRequire + "',");
         contenido.append("\n\t\t '" + modulo + ".model." + modelName + "',");
@@ -259,8 +259,8 @@ public class ConstructFileJS {
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
         contenido.append("\n\t ],");
-        contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
-        contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
+        contenido.append("\n\n\t viewModel: { type: '" + viewModelName + "'},");
+        contenido.append("\n\t controller: '" + viewControllerName + "',");
         contenido.append("\n\t plugins: 'gridfilters',");
         contenido.append("\n\t width: '100%', ");
         contenido.append("\n \t bind: {   store: '{" + storeRequire + "}' }, ");
@@ -512,7 +512,7 @@ public class ConstructFileJS {
         
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "', {");
         contenido.append("\n \t extend: 'Ext.app.ViewController', ");
-        contenido.append("\n \t alias: 'controller." + prefix + "." + "controller" + "." + viewControllerName + "', ");
+        contenido.append("\n \t alias: 'controller."  + viewControllerName + "', ");
         
         
         /* init */
@@ -535,12 +535,15 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/GenadminOp/" + storeRequire.toLowerCase() + "/listAll',");
         contenido.append("\n\t\t\t method: 'GET',");
         contenido.append("\n\t\t\t timeout: Genesis.app.constants.TIMEOUT,");
-        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, ");
+        contenido.append("\n\t\t\t headers: {");
+        contenido.append("\n\t\t\t\t 'Content-Type' : 'application/json',");
+        contenido.append("\n\t\t\t\t 'Authorization': "+ modulo +".app.constants.TOKEN");
+        contenido.append("\n\t\t\t }, ");
         contenido.append("\n\t\t\t params: {}, ");
         contenido.append("\n\t\t\t success: function(response, opt) {  ");
         contenido.append("\n\t\t\t\t response.responseText = Ext.decode(response.responseText);");
         contenido.append("\n\t\t\t\t " + storeNameVar + ".getProxy().setData(response.responseText);");
-        contenido.append("\n\t\t\t\t " + storeNameVar + ".load()");
+        contenido.append("\n\t\t\t\t " + storeNameVar + ".load();");
         contenido.append("\n\t\t\t },");
         contenido.append("\n\t\t\t failure: function(response, opt) { ");
         contenido.append("\n\t\t\t\t " + modulo + ".app.getController('BasController').notifyError('No se pudieron cargar los datos');");
@@ -666,7 +669,10 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/GenadminOp/util/getExcel',");
         contenido.append("\n\t\t\t method: 'POST',");
         contenido.append("\n\t\t\t params: Ext.encode(parameters),");
-        contenido.append("\n\t\t\t headers: { 'Content-Type' : 'application/vnd.ms-excel' },");
+        contenido.append("\n\t\t\t headers: { ");
+        contenido.append("\n\t\t\t\t 'Content-Type' : 'application/vnd.ms-excel',");
+        contenido.append("\n\t\t\t\t 'Authorization': "+modulo+".app.constants.TOKEN");
+        contenido.append("\n\t\t\t },");
         contenido.append("\n\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t waitModal.hide();");   
         contenido.append("\n\t\t\t\t response.responseText = Ext.decode(response.responseText);");
@@ -700,7 +706,11 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t var viewController = this;");
         contenido.append("\n\t\t\t\t Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/delete',  \n\t\t\t\t\t method: 'DELETE',");
-        contenido.append("\n\t\t\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t\t\t params: Ext.encode({"+recordToDel+"}),  ");
+        contenido.append("\n\t\t\t\t\t headers: { ");
+        contenido.append("\n\t\t\t\t\t\t 'Content-Type' : 'application/json',");
+        contenido.append("\n\t\t\t\t\t\t 'Authorization': "+modulo+".app.constants.TOKEN");
+        contenido.append("\n\t\t\t\t\t },");
+        contenido.append("\n\t\t\t\t\t params: Ext.encode({"+recordToDel+"}), ");
         contenido.append("\n\t\t\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t\t\t button.up('form').up('window').hide();");
         contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
@@ -731,12 +741,16 @@ public class ConstructFileJS {
         contenido.append("\n\n\t\t if (form.isValid()) {");
         contenido.append("\n\t\t  Ext.Ajax.request({ ");
         contenido.append("\n\t\t\t url :" + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/"+tablaName.toLowerCase()+ "/insert', \n\t\t\t method: 'POST',");
-        contenido.append("\n\t\t\t headers: {'Content-Type' : 'application/json' }, \n\t\t\t params:  Ext.encode(form.getValues()), ");
+        contenido.append("\n\t\t\t headers: {");
+        contenido.append("\n\t\t\t\t 'Content-Type' : 'application/json',");
+        contenido.append("\n\t\t\t\t 'Authorization':"+ modulo + ".app.constants.TOKEN");
+        contenido.append("\n\t\t\t }, ");
+        contenido.append("\n\t\t\t params: Ext.encode(form.getValues()), ");
         contenido.append("\n\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t waitModal.hide();");
-        contenido.append("\n\n\t\t\t\t button.up('form').up('window').hide();");
-        contenido.append("\n\n\t\t\t\t " + modulo + ".app.getController('BasController').notifySuccess('Se ha guardado exitosamente');");
-        contenido.append("\n\n\t\t\t\t viewController.loadData();");
+        contenido.append("\n\t\t\t\t button.up('form').up('window').hide();");
+        contenido.append("\n\t\t\t\t " + modulo + ".app.getController('BasController').notifySuccess('Se ha guardado exitosamente');");
+        contenido.append("\n\t\t\t\t viewController.loadData();");
         contenido.append("\n\t\t\t }, ");
         contenido.append("\n\t\t\t failure: function(response, opt) {  ");
         contenido.append("\n\t\t\t\t waitModal.hide();");
