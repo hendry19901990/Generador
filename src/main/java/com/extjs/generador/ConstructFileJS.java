@@ -414,7 +414,8 @@ public class ConstructFileJS {
         contenido.append("\n\t ],");
         //contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         //contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
-        contenido.append("\n\n\t items: [ \n\t{");
+        contenido.append("\n\n\t closeAction: 'hide',");
+        contenido.append("\n\t items: [ \n\t  {");
         contenido.append("\n\t\t xtype: 'form',");
         contenido.append("\n\t\t bodyPadding: 10,");
         
@@ -490,7 +491,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t ] ");
         */
         
-        contenido.append("\n\n\t\t}");
+        contenido.append("\n\n\t  }");
         
         contenido.append("\n\t ]");
         contenido.append("\n\n});");
