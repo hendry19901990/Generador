@@ -65,12 +65,14 @@ public class Formulario extends javax.swing.JFrame {
         directorioDestino.setSelectedFiles(null);
 
         createController.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        createController.setLabel("Controller");
+        createController.setText("Controller");
+  /*      
         createController.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 createControllerActionPerformed(evt);
             }
-        });
+        }); 
+   */
 
         createViewModel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         createViewModel.setText("ViewModel");
@@ -194,9 +196,6 @@ public class Formulario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tablaActionPerformed
 
-    private void createControllerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createControllerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_createControllerActionPerformed
 
     private void generarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generarBotonActionPerformed
         // TODO add your handling code here:

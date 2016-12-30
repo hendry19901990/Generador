@@ -759,6 +759,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t } ");
         contenido.append("\n\t\t  });");
         contenido.append("\n\n\t\t }else{");
+        contenido.append("\n\t\t\t waitModal.hide();");
         contenido.append("\n\t\t\t " + modulo + ".app.getController('BasController').notifyError('Datos de formulario inválido');");
         contenido.append("\n\n\t\t }");
         contenido.append("\n\t } ");
