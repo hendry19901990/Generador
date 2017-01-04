@@ -415,7 +415,7 @@ public class ConstructFileJS {
         //contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         //contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
         contenido.append("\n\n\t closeAction: 'hide',");
-        contenido.append("\n\n\t modal: true,");
+        contenido.append("\n\t modal: true,");
         contenido.append("\n\t items: [ \n\t  {");
         contenido.append("\n\t\t xtype: 'form',");
         contenido.append("\n\t\t bodyPadding: 10,");
