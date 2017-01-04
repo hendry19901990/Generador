@@ -415,6 +415,7 @@ public class ConstructFileJS {
         //contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         //contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
         contenido.append("\n\n\t closeAction: 'hide',");
+        contenido.append("\n\n\t modal: true,");
         contenido.append("\n\t items: [ \n\t  {");
         contenido.append("\n\t\t xtype: 'form',");
         contenido.append("\n\t\t bodyPadding: 10,");
@@ -435,14 +436,14 @@ public class ConstructFileJS {
                 if(columna.isIsprimarykey()){
                 	
                 	//String blanco =  ", disabled: true";
-                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "', editable: false, xtype:'textfield'"+ ", anchor:'100%', fieldLabel:'" + columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1) + "'} ");
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "', reference:'" + columna.getName() + "', editable: false, xtype:'textfield'"+ ", anchor:'100%', fieldLabel:'" + columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1) + "'} ");
                 	//contenido.append("\n \t\t\t {name:'" + columna.getName() +"_pk'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getName().substring(0, 1).toUpperCase() + columna.getName().substring(1) + "'} ");
                     
                 	
                 }else{
                
                 	String blanco = (columna.isIsnull())?  " " : ", allowBlank:false, blankText:'Este Campo es Obligatorio'";
-                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "'" + blanco + ", xtype:" + tipo + ", anchor:'100%', fieldLabel:'" + columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1) + "'} ");
+                	contenido.append("\n \t\t\t {name:'" + columna.getName() + "'" + blanco + ", xtype:" + tipo + ", anchor:'100%', reference:'" + columna.getName() + "', fieldLabel:'" + columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1) + "'} ");
                 
                 }
                 
