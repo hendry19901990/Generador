@@ -65,22 +65,30 @@ public class UtilDatabase {
     }
 
     public static List<ColumnType> getListColumnTypes(String tabla) {
+    	
     	List<ColumnType> list = null;
     	List<ColumnType> listResult = null;
         Connection dbConnection = null;
         Statement statement = null;
-        String selectTableSQL = "select COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_SCALE, NULLABLE from ALL_TAB_COLUMNS where TABLE_NAME = upper('" + tabla + "')";
+        String selectTableSQL = "select COLUMN_ID, COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_SCALE, NULLABLE from ALL_TAB_COLUMNS where TABLE_NAME = upper('" + tabla + "') ORDER BY COLUMN_ID";
+       
         try {
-            dbConnection = UtilDatabase.getDBConnection();
+            
+        	dbConnection = UtilDatabase.getDBConnection();
+            
             if (dbConnection == null) {
                 return null;
             }
+            
             statement = dbConnection.createStatement();
             ResultSet rs = statement.executeQuery(selectTableSQL);
+            
             while (rs.next()) {
+            	
                 if (list == null) {
                     list = new ArrayList<ColumnType>();
                 }
+                
                 String name = rs.getString("COLUMN_NAME");
                 String type = rs.getString("DATA_TYPE");
                 String data_lengthString = rs.getString("DATA_LENGTH");
@@ -89,9 +97,11 @@ public class UtilDatabase {
                 int data_scale = data_scaleString != null ? Integer.parseInt(data_scaleString) : 0;
                 String nullable = rs.getString("NULLABLE");
                 boolean isnull = !nullable.equalsIgnoreCase("N") && !nullable.contains("N");
-                ColumnType columnType = new ColumnType(name, type, data_length, data_scale, isnull, false);
+                ColumnType columnType = new ColumnType(rs.getInt("COLUMN_ID"), name, type, data_length, data_scale, isnull, false);
                 list.add(columnType);
+                
             }
+            
             if (statement != null) {
                 statement.close();
             }
@@ -161,11 +171,7 @@ public class UtilDatabase {
         		
         		public int compare(ColumnType colA, ColumnType colB) {
         			
-        			if(colA.isIsprimarykey()){
-        				return -1;
-        			}else{
-        				return 1;
-        			}
+        			return colA.getColumn_id().compareTo(colB.getColumn_id());
         			
         		}
         		
@@ -201,7 +207,7 @@ public class UtilDatabase {
                 }
                 String name = rs.getString("column_name");
                 boolean isnull = false;
-                ColumnType columnType = new ColumnType(name, null, 0, 0, isnull, true);
+                ColumnType columnType = new ColumnType(0,name, null, 0, 0, isnull, true);
                 list.add(columnType);
             }
             if (statement != null) {

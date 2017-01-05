@@ -1,6 +1,7 @@
 package com.extjs.generador;
 
 public class ColumnType {
+	private Integer column_id;
     private String name;
     private String type;
     private int data_length;
@@ -12,7 +13,8 @@ public class ColumnType {
     public ColumnType() {
     }
 
-    public ColumnType(String name, String type, int data_length, int data_scale, boolean isnull, boolean isprimarykey) {
+    public ColumnType(Integer column_id, String name, String type, int data_length, int data_scale, boolean isnull, boolean isprimarykey) {
+    	this.column_id = column_id;
         this.name = name.toLowerCase();
         this.type = type;
         this.data_length = data_length;
@@ -21,8 +23,18 @@ public class ColumnType {
         this.isprimarykey = isprimarykey;
         this.alias = name.toLowerCase();
     }
+    
+    
 
-    public boolean isIsnull() {
+    public Integer getColumn_id() {
+		return column_id;
+	}
+
+	public void setColumn_id(Integer column_id) {
+		this.column_id = column_id;
+	}
+
+	public boolean isIsnull() {
         return this.isnull;
     }
 
