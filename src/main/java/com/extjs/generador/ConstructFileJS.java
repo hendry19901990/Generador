@@ -534,7 +534,7 @@ public class ConstructFileJS {
         contenido.append("\n\n\t\t var " + storeNameVar + " = this.getViewModel().getStore('" + storeRequire + "');");
         contenido.append("\n\t\t var viewController = this;");
         contenido.append("\n\t\t Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/GenadminOp/" + storeRequire.toLowerCase() + "/listAll',");
+        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/" + storeRequire.toLowerCase() + "/listAll',");
         contenido.append("\n\t\t\t method: 'GET',");
         contenido.append("\n\t\t\t timeout: Genesis.app.constants.TIMEOUT,");
         contenido.append("\n\t\t\t headers: {");
@@ -668,7 +668,7 @@ public class ConstructFileJS {
         contenido.append(dataToExportExcell.toString());
         
         contenido.append("\n\n\t\t Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/GenadminOp/util/getExcel',");
+        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/util/getExcel',");
         contenido.append("\n\t\t\t method: 'POST',");
         contenido.append("\n\t\t\t params: Ext.encode(parameters),");
         contenido.append("\n\t\t\t headers: { ");
