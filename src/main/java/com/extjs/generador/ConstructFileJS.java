@@ -561,8 +561,8 @@ public class ConstructFileJS {
         contenido.append("\n\t  */");
         contenido.append("\n\t newRecord: function(){ ");
         contenido.append("\n\n\t\t Ext.WindowMgr.hideAll();");
-        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
-        contenido.append("\n\t\t ventana.controller = this;");
+        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "', {controller: this});");
+        //contenido.append("\n\t\t ventana.controller = this;");
         
         String recordToNew = "";
         String recordToDel = "";
@@ -591,8 +591,8 @@ public class ConstructFileJS {
         contenido.append("\n\t onSeeDetailItem : function(button, e, eOpts) {  ");
         contenido.append("\n\n\t\t var record = button.getWidgetRecord();");
         contenido.append("\n\t\t Ext.WindowMgr.hideAll();");
-        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
-        contenido.append("\n\t\t ventana.controller = this;");
+        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "', {controller: this});");
+       // contenido.append("\n\t\t ventana.controller = this;");
         contenido.append("\n\t\t ventana.down('form').getForm().loadRecord(record);");
         contenido.append("\n\t\t ventana.show();");
         contenido.append("\n\n\t }, ");
