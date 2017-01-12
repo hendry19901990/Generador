@@ -127,22 +127,23 @@ public class Generafile {
                     folderGridPanel.mkdir();
                 }
                 
-                Generafile.createGridPanelFile(artifactoID, folderGridPanel.getAbsolutePath(), modulo, listColumnTypes, prefix.toLowerCase());
+                Generafile.createGridPanelFile(artifactoID, folderGridPanel.getAbsolutePath(), modulo, listColumnTypes, prefix.toLowerCase(), servicio);
             }
             
             System.out.println("OK!");
         }
     }
 
-    private static void createGridPanelFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix) {
+    private static void createGridPanelFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
     	
         String contentFileFormulario = ConstructFileJS.createFormulario(modulo, fileTocreate, list, prefix);
         String contentFileGridPanel = ConstructFileJS.createGridPanel(modulo, fileTocreate, list, prefix);
+        
         //String contentFileWidget = ConstructFileJS.createWidget(modulo, fileTocreate, list, prefix);
         
         Writer ficheroFormulario = null;
         Writer ficheroGridPanel = null;
-       // Writer ficheroWidget = null;
+       
         
         try {
         
@@ -164,15 +165,8 @@ public class Generafile {
                 ficheroGridPanel.close();
             }
             
-            /*
-            ficheroWidget =  new BufferedWriter(new OutputStreamWriter(
-        			new FileOutputStream(destino + File.separator + fileTocreate + "WidgetView.js"), "UTF-8"));
+
              
-            ficheroWidget.write(contentFileWidget);
-            
-            if (ficheroWidget != null) 
-                ficheroWidget.close();
-            */
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -308,26 +302,31 @@ public class Generafile {
     private static void createViewControllerFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
     	
         String contentFile = ConstructFileJS.createViewController(modulo, fileTocreate, list, prefix, servicio);
+        String contentFileFormViewController = ConstructFileJS.createFormViewController(modulo, fileTocreate, list, prefix, servicio);
         Writer fichero = null;
+        Writer ficheroFormViewController = null;
         
         try {
             fichero = new BufferedWriter(new OutputStreamWriter(
         			new FileOutputStream(destino + File.separator + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController.js"), "UTF-8"));
              
             fichero.write(contentFile);
+            
+            ficheroFormViewController =  new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate + "FormViewController.js"), "UTF-8"));
+             
+            ficheroFormViewController.write(contentFileFormViewController);
+            
+            if (fichero != null) {
+                fichero.close();
+            }
+            
+            if (ficheroFormViewController != null) 
+            	ficheroFormViewController.close();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        finally {
-            try {
-                if (fichero != null) {
-                    fichero.close();
-                }
-            }
-            catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        }
+         
     }
 }

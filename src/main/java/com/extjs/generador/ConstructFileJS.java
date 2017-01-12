@@ -400,25 +400,30 @@ public class ConstructFileJS {
         StringBuffer contenido = new StringBuffer();
         String formularioName = fileTocreate + "Window";
         String formularioTitle = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
-        String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
+      //  String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
+        String formViewController = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "FormViewController";
         
         
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + formularioName + "', {");
         contenido.append("\n \t extend: 'Ext.window.Window', ");
         contenido.append("\n \t alias: 'widget." + formularioName + "', ");
+        contenido.append("\n \t reference: '" + formularioName + "', ");
         contenido.append("\n\t title: '"+formularioTitle+"', \n\t width: 400,");
         contenido.append("\n\n\t requires: [ ");
-        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + formViewController + "',");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
         contenido.append("\n\t ],");
         //contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         //contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
         contenido.append("\n\n\t closeAction: 'hide',");
         contenido.append("\n\t modal: true,");
+        contenido.append("\n\t viewModel: { type: '" + viewModelName + "'},");
+        contenido.append("\n\t controller: '" + formViewController + "',");
         contenido.append("\n\t items: [ \n\t  {");
         contenido.append("\n\t\t xtype: 'form',");
         contenido.append("\n\t\t bodyPadding: 10,");
+       
         
         contenido.append("\n\t\t items:[ ");
         if (list != null) {
@@ -506,6 +511,7 @@ public class ConstructFileJS {
         StringBuffer dataToExportExcell = new StringBuffer();
         StringBuffer constructArrayExcell = new StringBuffer();
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
+        String formViewController = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "FormViewController";
         String formularioName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Window";
         String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         String modelName = modulo + ".model." + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
@@ -515,6 +521,20 @@ public class ConstructFileJS {
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "', {");
         contenido.append("\n \t extend: 'Ext.app.ViewController', ");
         contenido.append("\n \t alias: 'controller."  + viewControllerName + "', ");
+        
+        
+        /* listen */
+        contenido.append("\n\n\t /**");
+        contenido.append("\n\t  * Exponer metodo a otro ViewController");
+        contenido.append("\n\t  */");
+        contenido.append("\n\t listen:{");
+        contenido.append("\n\t\t controller:{");
+        contenido.append("\n\t\t\t "+formViewController+":{");
+        contenido.append("\n\t\t\t\t  loadData:'loadData'");
+        contenido.append("\n\t\t\t }");
+        contenido.append("\n\t\t }");        
+        contenido.append("\n\t },");
+        /* listen */
         
         
         /* init */
@@ -561,16 +581,16 @@ public class ConstructFileJS {
         contenido.append("\n\t  */");
         contenido.append("\n\t newRecord: function(){ ");
         contenido.append("\n\n\t\t Ext.WindowMgr.hideAll();");
-        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "', {controller: this});");
+        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
         //contenido.append("\n\t\t ventana.controller = this;");
         
         String recordToNew = "";
-        String recordToDel = "";
+      //  String recordToDel = "";
         for(ColumnType col : list){
         	
         	if(col.isIsprimarykey()){
         		recordToNew = col.getName() + " : 0";
-        		recordToDel = col.getName() + " : form.findField('"+col.getName()+"').getValue()";
+        	//	recordToDel = col.getName() + " : form.findField('"+col.getName()+"').getValue()";
         		break;
         	}
         	
@@ -591,7 +611,7 @@ public class ConstructFileJS {
         contenido.append("\n\t onSeeDetailItem : function(button, e, eOpts) {  ");
         contenido.append("\n\n\t\t var record = button.getWidgetRecord();");
         contenido.append("\n\t\t Ext.WindowMgr.hideAll();");
-        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "', {controller: this});");
+        contenido.append("\n\t\t var ventana = Ext.widget('" + formularioName + "');");
        // contenido.append("\n\t\t ventana.controller = this;");
         contenido.append("\n\t\t ventana.down('form').getForm().loadRecord(record);");
         contenido.append("\n\t\t ventana.show();");
@@ -610,16 +630,7 @@ public class ConstructFileJS {
         */
         /* onItemSelected */
         
-        /* onReset */
-        contenido.append("\n\n\t /**");
-        contenido.append("\n\t  * Limpia los campos de la ventana");
-        contenido.append("\n\t  */");
-        contenido.append("\n\t onReset: function(button, e, eOpts) { ");
-        contenido.append("\n\n\t\t var ventana = button.up('toolbar').up('form').up('window');");
-        contenido.append("\n\t\t ventana.down('form').getForm().reset();");
-        contenido.append("\n\t\t ventana.hide();");
-        contenido.append("\n\n\t }, ");
-        /* onReset */
+
         
         /* onExportExcel */
         contenido.append("\n\n\t /**");
@@ -691,8 +702,55 @@ public class ConstructFileJS {
         
         contenido.append("\n\t\t\t }");
         contenido.append("\n\t\t });");
-        contenido.append("\n\n\t }, ");
+        contenido.append("\n\n\t } ");
         /* onExportExcel */
+        
+        
+        
+        contenido.append("\n});");
+        
+        return contenido.toString();
+    }
+    
+    public static String createFormViewController(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
+    	
+        StringBuffer contenido = new StringBuffer();
+       // StringBuffer dataToExportExcell = new StringBuffer();
+        //StringBuffer constructArrayExcell = new StringBuffer();
+        String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "FormViewController";
+       // String formularioName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Window";
+        String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
+        //String modelName = modulo + ".model." + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
+        String storeNameVar = "store" + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
+        String tablaName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
+        
+        //String recordToNew = "";
+        String recordToDel = "";
+        for(ColumnType col : list){
+        	
+        	if(col.isIsprimarykey()){
+        		//recordToNew = col.getName() + " : 0";
+        		recordToDel = col.getName() + " : form.findField('"+col.getName()+"').getValue()";
+        		break;
+        	}
+        	
+        }
+        
+        
+        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "', {");
+        contenido.append("\n \t extend: 'Ext.app.ViewController', ");
+        contenido.append("\n \t alias: 'controller."  + viewControllerName + "', ");
+        
+        /* onReset */
+        contenido.append("\n\n\t /**");
+        contenido.append("\n\t  * Limpia los campos de la ventana");
+        contenido.append("\n\t  */");
+        contenido.append("\n\t onReset: function(button, e, eOpts) { ");
+        contenido.append("\n\n\t\t var ventana = button.up('toolbar').up('form').up('window');");
+        contenido.append("\n\t\t ventana.down('form').getForm().reset();");
+        contenido.append("\n\t\t ventana.hide();");
+        contenido.append("\n\n\t }, ");
+        /* onReset */
         
         /* onDelete */
         contenido.append("\n\n\t /**");
@@ -716,7 +774,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t\t\t button.up('form').up('window').hide();");
         contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
-        contenido.append("\n\t\t\t\t\t\t viewController.loadData();");
+        contenido.append("\n\t\t\t\t\t\t viewController.fireEvent('loadData', null);");
         contenido.append("\n\t\t\t\t\t }, ");
         contenido.append("\n\t\t\t\t\t failure: function(response, opt) {   ");
         contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
@@ -752,7 +810,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t waitModal.hide();");
         contenido.append("\n\t\t\t\t button.up('form').up('window').hide();");
         contenido.append("\n\t\t\t\t " + modulo + ".app.getController('BasController').notifySuccess('Se ha guardado exitosamente');");
-        contenido.append("\n\t\t\t\t viewController.loadData();");
+        contenido.append("\n\t\t\t\t viewController.fireEvent('loadData', null);");
         contenido.append("\n\t\t\t }, ");
         contenido.append("\n\t\t\t failure: function(response, opt) {  ");
         contenido.append("\n\t\t\t\t waitModal.hide();");
@@ -766,8 +824,9 @@ public class ConstructFileJS {
         contenido.append("\n\t } ");
         /* onSave */
         
-        contenido.append("\n});");
         
+        contenido.append("\n});");
+    	
         return contenido.toString();
     }
 }
