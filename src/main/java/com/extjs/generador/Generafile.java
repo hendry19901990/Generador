@@ -148,7 +148,7 @@ public class Generafile {
         try {
         
         	ficheroFormulario = new BufferedWriter(new OutputStreamWriter(
-        			new FileOutputStream(destino + File.separator + fileTocreate + "Formulario.js"), "UTF-8"));
+        			new FileOutputStream(destino + File.separator + fileTocreate + "Window.js"), "UTF-8"));
         	
             ficheroFormulario.write(contentFileFormulario);
             
@@ -313,7 +313,7 @@ public class Generafile {
             fichero.write(contentFile);
             
             ficheroFormViewController =  new BufferedWriter(new OutputStreamWriter(
-        			new FileOutputStream(destino + File.separator + fileTocreate + "FormViewController.js"), "UTF-8"));
+        			new FileOutputStream(destino + File.separator + fileTocreate + "WindowViewController.js"), "UTF-8"));
              
             ficheroFormViewController.write(contentFileFormViewController);
             

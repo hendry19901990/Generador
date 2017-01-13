@@ -273,13 +273,14 @@ public class ConstructFileJS {
             	boolean isDate = false;
             	
             	String filter = "";
+            	String align="";
             	
             	if (columna.getType().equalsIgnoreCase("NUMBER") || columna.getType().equalsIgnoreCase("FLOAT") ||
                 		columna.getType().equalsIgnoreCase("DECIMAL") || columna.getType().equalsIgnoreCase("Floating-Point") || 
                 		columna.getType().equalsIgnoreCase("BINARY_FLOAT") || columna.getType().equalsIgnoreCase("BINARY_DOUBLE")) {
                    
             		filter = "filter: 'number'";
-                	
+            		align=",  align: 'right', lockable: false";
                 } else if (columna.getType().equalsIgnoreCase("DATE") || columna.getType().equalsIgnoreCase("TIMESTAMP") || 
                 		columna.getType().equalsIgnoreCase("DATE")) {
                     
@@ -293,11 +294,12 @@ public class ConstructFileJS {
             	String texto = columna.getAlias().substring(0, 1).toUpperCase() + columna.getAlias().substring(1);
             	
             	if(i==0){
-            		contenido.append("\n \t\t {xtype: 'rownumberer'},");
+            		contenido.append("\n \t\t {xtype: 'rownumberer', locked: true},");
             		
             		contenido.append("\n\t\t { ");
             		contenido.append("\n\t\t\t width: 70,");
             		contenido.append("\n\t\t\t xtype: 'widgetcolumn',");
+            		contenido.append("\n\t\t\t locked   : true,");
             		contenido.append("\n\t\t\t widget: {");
             		contenido.append("\n\t\t\t\t width: '100%',");
             		contenido.append("\n\t\t\t\t xtype: 'button',");
@@ -321,6 +323,8 @@ public class ConstructFileJS {
             		contenido.append("\n \t\t\t text:'"+texto+ "', ");
             		contenido.append("\n \t\t\t xtype: 'datecolumn',");
             		contenido.append("\n \t\t\t format: 'Y-m-d H:i:s',");
+            		contenido.append("\n \t\t\t width: 150,");
+            		contenido.append("\n \t\t\t flex: 0,");
             		contenido.append("\n \t\t\t filter: {");
             		contenido.append("\n \t\t\t\t type:'date',");
             		contenido.append("\n \t\t\t\t fields:{");
@@ -335,7 +339,7 @@ public class ConstructFileJS {
             		
             	}else{
             		
-            		contenido.append("\n \t\t {text:'"+texto+ "', "+filter+",dataIndex:'" + columna.getName() + "', flex: 1}");
+            		contenido.append("\n \t\t {text:'"+texto+ "', "+filter+",dataIndex:'" + columna.getName() + "', flex: 0, width: 150"+align+"}");
             		
             	}
                 
@@ -402,7 +406,7 @@ public class ConstructFileJS {
         String formularioTitle = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
       //  String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
-        String formViewController = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "FormViewController";
+        String formViewController = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "WindowViewController";
         
         
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + formularioName + "', {");
@@ -511,7 +515,7 @@ public class ConstructFileJS {
         StringBuffer dataToExportExcell = new StringBuffer();
         StringBuffer constructArrayExcell = new StringBuffer();
         String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewController";
-        String formViewController = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "FormViewController";
+        String formViewController = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "WindowViewController";
         String formularioName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Window";
         String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         String modelName = modulo + ".model." + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
@@ -529,7 +533,7 @@ public class ConstructFileJS {
         contenido.append("\n\t  */");
         contenido.append("\n\t listen:{");
         contenido.append("\n\t\t controller:{");
-        contenido.append("\n\t\t\t "+formViewController+":{");
+        contenido.append("\n\t\t\t '"+formViewController+"': {");
         contenido.append("\n\t\t\t\t  loadData:'loadData'");
         contenido.append("\n\t\t\t }");
         contenido.append("\n\t\t }");        
@@ -717,7 +721,7 @@ public class ConstructFileJS {
         StringBuffer contenido = new StringBuffer();
        // StringBuffer dataToExportExcell = new StringBuffer();
         //StringBuffer constructArrayExcell = new StringBuffer();
-        String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "FormViewController";
+        String viewControllerName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "WindowViewController";
        // String formularioName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Window";
         String storeRequire = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         //String modelName = modulo + ".model." + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
