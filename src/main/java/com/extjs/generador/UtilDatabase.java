@@ -277,7 +277,8 @@ public class UtilDatabase {
             System.out.println(e.getMessage());
         }
         try {
-            dbConnection = DriverManager.getConnection("jdbc:oracle:thin:@10.0.0.94:1521:KPITALUP", "genesis", "Akc123456");
+            //dbConnection = DriverManager.getConnection("jdbc:oracle:thin:@10.0.0.94:1521:KPITALUP", "genesis", "Akc123456");
+            dbConnection = DriverManager.getConnection("jdbc:oracle:thin:@10.0.0.94:1521:kpitalup", "lbase", "PD88DDAGEK");
             return dbConnection;
         }
         catch (SQLException e) {
