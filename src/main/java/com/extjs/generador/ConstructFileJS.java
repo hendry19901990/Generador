@@ -302,6 +302,7 @@ public class ConstructFileJS {
             		contenido.append("\n\t\t\t locked   : true,");
             		contenido.append("\n\t\t\t widget: {");
             		contenido.append("\n\t\t\t\t width: '100%',");
+            		contenido.append("\n\t\t\t\t tooltip: 'Ver detalle',");
             		contenido.append("\n\t\t\t\t xtype: 'button',");
             		contenido.append("\n\t\t\t\t iconCls: 'x-fa fa-eye',");
             		contenido.append("\n\t\t\t\t style: 'background:#BDBFC1;border-color:transparent;',");
@@ -412,7 +413,7 @@ public class ConstructFileJS {
         contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + formularioName + "', {");
         contenido.append("\n \t extend: 'Ext.window.Window', ");
         contenido.append("\n \t alias: 'widget." + formularioName + "', ");
-        contenido.append("\n \t reference: '" + formularioName + "', ");
+        //contenido.append("\n \t reference: '" + formularioName + "', ");
         contenido.append("\n\t title: '"+formularioTitle+"', \n\t width: 400,");
         contenido.append("\n\n\t requires: [ ");
         contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + formViewController + "',");
@@ -420,7 +421,7 @@ public class ConstructFileJS {
         contenido.append("\n\t ],");
         //contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         //contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
-        contenido.append("\n\n\t closeAction: 'hide',");
+        //contenido.append("\n\n\t closeAction: 'hide',");
         contenido.append("\n\t modal: true,");
         contenido.append("\n\t viewModel: { type: '" + viewModelName + "'},");
         contenido.append("\n\t controller: '" + formViewController + "',");
@@ -683,7 +684,7 @@ public class ConstructFileJS {
         contenido.append(dataToExportExcell.toString());
         
         contenido.append("\n\n\t\t Ext.Ajax.request({ ");
-        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/"+servicio+"/util/getExcel',");
+        contenido.append("\n\t\t\t url: " + modulo + ".app.constants.URL_ROOT+'/genUtilitario/util/getExcel',");
         contenido.append("\n\t\t\t method: 'POST',");
         contenido.append("\n\t\t\t params: Ext.encode(parameters),");
         contenido.append("\n\t\t\t headers: { ");
@@ -751,8 +752,8 @@ public class ConstructFileJS {
         contenido.append("\n\t  */");
         contenido.append("\n\t onReset: function(button, e, eOpts) { ");
         contenido.append("\n\n\t\t var ventana = button.up('toolbar').up('form').up('window');");
-        contenido.append("\n\t\t ventana.down('form').getForm().reset();");
-        contenido.append("\n\t\t ventana.hide();");
+      //  contenido.append("\n\t\t ventana.down('form').getForm().reset();");
+        contenido.append("\n\t\t ventana.destroy();");
         contenido.append("\n\n\t }, ");
         /* onReset */
         
@@ -776,7 +777,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t\t\t },");
         contenido.append("\n\t\t\t\t\t params: Ext.encode({"+recordToDel+"}), ");
         contenido.append("\n\t\t\t\t\t success: function(response, opt) { ");
-        contenido.append("\n\t\t\t\t\t\t button.up('form').up('window').hide();");
+        contenido.append("\n\t\t\t\t\t\t ventana.destroy();");
         contenido.append("\n\t\t\t\t\t\t waitModal.hide();");
         contenido.append("\n\t\t\t\t\t\t viewController.fireEvent('loadData', null);");
         contenido.append("\n\t\t\t\t\t }, ");
@@ -812,7 +813,7 @@ public class ConstructFileJS {
         contenido.append("\n\t\t\t params: Ext.encode(form.getValues()), ");
         contenido.append("\n\t\t\t success: function(response, opt) { ");
         contenido.append("\n\t\t\t\t waitModal.hide();");
-        contenido.append("\n\t\t\t\t button.up('form').up('window').hide();");
+        contenido.append("\n\t\t\t\t ventana.destroy();");
         contenido.append("\n\t\t\t\t " + modulo + ".app.getController('BasController').notifySuccess('Se ha guardado exitosamente');");
         contenido.append("\n\t\t\t\t viewController.fireEvent('loadData', null);");
         contenido.append("\n\t\t\t }, ");
