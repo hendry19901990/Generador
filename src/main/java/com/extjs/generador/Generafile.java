@@ -138,12 +138,13 @@ public class Generafile {
     	
         String contentFileFormulario = ConstructFileJS.createFormulario(modulo, fileTocreate, list, prefix);
         String contentFileGridPanel = ConstructFileJS.createGridPanel(modulo, fileTocreate, list, prefix);
+        String contentWindowViewModel = ConstructFileJS.createWindowViewModel(modulo, fileTocreate, prefix);
         
         //String contentFileWidget = ConstructFileJS.createWidget(modulo, fileTocreate, list, prefix);
         
         Writer ficheroFormulario = null;
         Writer ficheroGridPanel = null;
-       
+        Writer ficheroWindowViewModel = null;
         
         try {
         
@@ -165,8 +166,15 @@ public class Generafile {
                 ficheroGridPanel.close();
             }
             
-
-             
+            ficheroWindowViewModel =   new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate + "WindowViewModel.js"), "UTF-8"));
+            
+            ficheroWindowViewModel.write(contentWindowViewModel);
+            
+            if (ficheroWindowViewModel != null) {
+            	ficheroWindowViewModel.close();
+            }
+                         
         }
         catch (Exception e) {
             e.printStackTrace();
