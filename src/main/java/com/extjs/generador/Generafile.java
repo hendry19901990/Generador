@@ -138,13 +138,12 @@ public class Generafile {
     	
         String contentFileFormulario = ConstructFileJS.createFormulario(modulo, fileTocreate, list, prefix);
         String contentFileGridPanel = ConstructFileJS.createGridPanel(modulo, fileTocreate, list, prefix);
-        String contentWindowViewModel = ConstructFileJS.createWindowViewModel(modulo, fileTocreate, prefix);
+       
         
         //String contentFileWidget = ConstructFileJS.createWidget(modulo, fileTocreate, list, prefix);
         
         Writer ficheroFormulario = null;
         Writer ficheroGridPanel = null;
-        Writer ficheroWindowViewModel = null;
         
         try {
         
@@ -166,14 +165,7 @@ public class Generafile {
                 ficheroGridPanel.close();
             }
             
-            ficheroWindowViewModel =   new BufferedWriter(new OutputStreamWriter(
-        			new FileOutputStream(destino + File.separator + fileTocreate + "WindowViewModel.js"), "UTF-8"));
-            
-            ficheroWindowViewModel.write(contentWindowViewModel);
-            
-            if (ficheroWindowViewModel != null) {
-            	ficheroWindowViewModel.close();
-            }
+
                          
         }
         catch (Exception e) {
@@ -275,33 +267,36 @@ public class Generafile {
         }
     }
 
-    /*
-     * WARNING - Removed try catching itself - possible behaviour change.
-     */
     private static void createViewModelFile(String modulo, String destino, String fileTocreate, String prefix) {
     	
         String contentFile = ConstructFileJS.createViewModel(modulo, fileTocreate, prefix);
+        String contentWindowViewModel = ConstructFileJS.createWindowViewModel(modulo, fileTocreate, prefix);
         Writer fichero = null;
+        Writer ficheroWindowViewModel = null;
         
         try {
             fichero = new BufferedWriter(new OutputStreamWriter(
         			new FileOutputStream(destino + File.separator + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel.js"), "UTF-8"));
              
             fichero.write(contentFile);
+            
+            if (fichero != null) {
+                fichero.close();
+            }
+            
+            ficheroWindowViewModel =   new BufferedWriter(new OutputStreamWriter(
+        			new FileOutputStream(destino + File.separator + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "WindowViewModel.js"), "UTF-8"));
+            
+            ficheroWindowViewModel.write(contentWindowViewModel);
+            
+            if (ficheroWindowViewModel != null) {
+            	ficheroWindowViewModel.close();
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        finally {
-            try {
-                if (fichero != null) {
-                    fichero.close();
-                }
-            }
-            catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        }
+        
     }
 
     /*
