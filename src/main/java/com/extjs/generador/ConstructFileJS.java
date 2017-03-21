@@ -12,7 +12,7 @@ public class ConstructFileJS {
         String storeName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         String modelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
         
-        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "', {");
+        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "model" + "."  + subModulo + "." +  viewModelName + "', {");
         contenido.append("\n\t extend: 'Ext.app.ViewModel', ");
         contenido.append("\n\t alias: 'viewmodel." + viewModelName + "', ");
         contenido.append("\n\t requires: [ ");
@@ -53,7 +53,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
        // String storeName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
        // String modelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "Model";
         
-        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "model" + "." + viewWindowViewModelName + "', {");
+        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "model" + "."  + subModulo + "." +  viewWindowViewModelName + "', {");
         contenido.append("\n\t extend: 'Ext.app.ViewModel', ");
         contenido.append("\n\t alias: 'viewmodel." + viewWindowViewModelName + "', ");
         contenido.append("\n\t requires: [ ");
@@ -436,14 +436,14 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         String viewWindowViewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "WindowViewModel";
         
         
-        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "."   + subModulo + "."  + formularioName + "', {");
+        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + subModulo + "." + formularioName + "', {");
         contenido.append("\n \t extend: 'Ext.window.Window', ");
         contenido.append("\n \t alias: 'widget." + formularioName + "', ");
         //contenido.append("\n \t reference: '" + formularioName + "', ");
         contenido.append("\n\t title: '"+formularioTitle+"', \n\t width: 400,");
         contenido.append("\n\n\t requires: [ ");
-        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "."  + subModulo + "." + formViewController + "',");
-        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "."   + subModulo + "."  + viewWindowViewModelName + "'");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + subModulo + "." + formViewController + "',");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + subModulo + "."  + viewWindowViewModelName + "'");
         contenido.append("\n\t ],");
         //contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         //contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
@@ -549,7 +549,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         String storeNameVar = "store" + fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         String tablaName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1);
         
-        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "', {");
+        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + subModulo + "." + viewControllerName + "', {");
         contenido.append("\n \t extend: 'Ext.app.ViewController', ");
         contenido.append("\n \t alias: 'controller."  + viewControllerName + "', ");
         
@@ -768,7 +768,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         }
         
         
-        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "', {");
+        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "controller" + "."  + subModulo + "." +  viewControllerName + "', {");
         contenido.append("\n \t extend: 'Ext.app.ViewController', ");
         contenido.append("\n \t alias: 'controller."  + viewControllerName + "', ");
         
