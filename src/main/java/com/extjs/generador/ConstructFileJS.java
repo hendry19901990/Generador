@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ConstructFileJS {
     
-	public static String createViewModel(String modulo, String fileTocreate, String prefix) {
+	public static String createViewModel(String modulo, String fileTocreate, String prefix, String subModulo) {
         
 		StringBuffer contenido = new StringBuffer();
         String viewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "ViewModel";
@@ -45,7 +45,7 @@ public class ConstructFileJS {
         return contenido.toString();
     }
 	
-public static String createWindowViewModel(String modulo, String fileTocreate, String prefix) {
+public static String createWindowViewModel(String modulo, String fileTocreate, String prefix, String subModulo) {
         
 		StringBuffer contenido = new StringBuffer();
         String viewWindowViewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "WindowViewModel";
@@ -261,7 +261,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         return contenido.toString();
     }
 
-    public static String createGridPanel(String modulo, String fileTocreate, List<ColumnType> list, String prefix) {
+    public static String createGridPanel(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String subModulo) {
         
     	StringBuffer contenido = new StringBuffer();
         String gridPanelName = fileTocreate + "GridPanel";
@@ -271,7 +271,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         
         
         
-        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + gridPanelName + "', {");
+        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + subModulo + "." +  gridPanelName + "', {");
         contenido.append("\n \t extend: 'Ext.grid.Panel', ");
         contenido.append("\n \t xtype: '" + gridPanelName + "', ");
         contenido.append("\n\n\t requires: [ ");
@@ -281,8 +281,8 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
        // contenido.append("\n\t\t 'Ext.grid.filters.Filters',");
         contenido.append("\n\t\t 'Ext.toolbar.Paging',");
         contenido.append("\n\t\t 'Ext.ux.ProgressBarPager',");
-        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + viewControllerName + "',");
-        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewModelName + "'");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "."  + subModulo + "."  + viewControllerName + "',");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "."  + subModulo + "."  + viewModelName + "'");
         contenido.append("\n\t ],");
         contenido.append("\n\n\t viewModel: { type: '" + viewModelName + "'},");
         contenido.append("\n\t controller: '" + viewControllerName + "',");
@@ -425,7 +425,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         return contenido.toString();
     }
 
-    public static String createFormulario(String modulo, String fileTocreate, List<ColumnType> list, String prefix) {
+    public static String createFormulario(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String subModulo) {
     	
         StringBuffer contenido = new StringBuffer();
         String formularioName = fileTocreate + "Window";
@@ -436,14 +436,14 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         String viewWindowViewModelName = fileTocreate.substring(0, 1).toUpperCase() + fileTocreate.substring(1) + "WindowViewModel";
         
         
-        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "." + formularioName + "', {");
+        contenido.append("Ext.define('" + modulo + ".view." + prefix + "." + "view" + "."   + subModulo + "."  + formularioName + "', {");
         contenido.append("\n \t extend: 'Ext.window.Window', ");
         contenido.append("\n \t alias: 'widget." + formularioName + "', ");
         //contenido.append("\n \t reference: '" + formularioName + "', ");
         contenido.append("\n\t title: '"+formularioTitle+"', \n\t width: 400,");
         contenido.append("\n\n\t requires: [ ");
-        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "." + formViewController + "',");
-        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "." + viewWindowViewModelName + "'");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "controller" + "."  + subModulo + "." + formViewController + "',");
+        contenido.append("\n\t\t '" + modulo + ".view." + prefix + "." + "model" + "."   + subModulo + "."  + viewWindowViewModelName + "'");
         contenido.append("\n\t ],");
         //contenido.append("\n\n\t viewModel: { type: '" + prefix + ".model." + viewModelName + "'},");
         //contenido.append("\n\t controller: '" + prefix + ".controller." + viewControllerName + "',");
@@ -536,7 +536,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         return contenido.toString();
     }
 
-    public static String createViewController(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
+    public static String createViewController(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String servicio, String subModulo) {
     	
         StringBuffer contenido = new StringBuffer();
         StringBuffer dataToExportExcell = new StringBuffer();
@@ -743,7 +743,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         return contenido.toString();
     }
     
-    public static String createFormViewController(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
+    public static String createFormViewController(String modulo, String fileTocreate, List<ColumnType> list, String prefix, String servicio, String subModulo) {
     	
         StringBuffer contenido = new StringBuffer();
        // StringBuffer dataToExportExcell = new StringBuffer();

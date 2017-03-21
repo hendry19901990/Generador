@@ -36,6 +36,7 @@ public class Generafile {
             String[] output = tabla.split("\\_");
             String prefix = output[0];
             String modulo = output[1];
+            String subModulo = output[1].toLowerCase();
             
             modulo = prefix.substring(0, 1).toUpperCase() + prefix.substring(1).toLowerCase() + modulo.substring(0, 1).toUpperCase() + modulo.substring(1).toLowerCase();
             
@@ -71,7 +72,8 @@ public class Generafile {
             	
             	File folderView = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view");
                 File folderViewModelPrefix = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase());
-                File folderViewModel = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "model");
+                File folderViewModelPrefixSubModulo = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "model" );
+                File folderViewModel = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "model" + File.separator + subModulo );
                 
                 if (!folderView.exists()) {
                     folderView.mkdir();
@@ -81,19 +83,24 @@ public class Generafile {
                     folderViewModelPrefix.mkdir();
                 }
                 
+                if (!folderViewModelPrefixSubModulo.exists()) {
+                	folderViewModelPrefixSubModulo.mkdir();
+                }
+                
                 if (!folderViewModel.exists()) {
                     folderViewModel.mkdir();
                 }
                 
-                Generafile.createViewModelFile(artifactoID, folderViewModel.getAbsolutePath(), modulo, prefix.toLowerCase());
+                Generafile.createViewModelFile(artifactoID, folderViewModel.getAbsolutePath(), modulo, prefix.toLowerCase(), subModulo);
             }
             
             if (createViewController) {
             	
             	File folderView = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view");
                 File folderViewControllerPrefix = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase());
-                File folderViewController = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "controller");
-               
+                File folderViewControllerSubmodulo = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "controller");
+                File folderViewController =  new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "controller" + File.separator + subModulo);
+                
                 if (!folderView.exists()) {
                     folderView.mkdir();
                 }
@@ -101,20 +108,25 @@ public class Generafile {
                 if (!folderViewControllerPrefix.exists()) {
                     folderViewControllerPrefix.mkdir();
                 }
+                
+                if (!folderViewControllerSubmodulo.exists()) {
+                	folderViewControllerSubmodulo.mkdir();
+                }
               
                 if (!folderViewController.exists()) {
                     folderViewController.mkdir();
                 }
                 
-                Generafile.createViewControllerFile(artifactoID, folderViewController.getAbsolutePath(), modulo, listColumnTypes, prefix.toLowerCase(), servicio);
+                Generafile.createViewControllerFile(artifactoID, folderViewController.getAbsolutePath(), modulo, listColumnTypes, prefix.toLowerCase(), servicio, subModulo);
             }
             
             if (createGridPanel) {
             	
             	File folderView = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view");
                 File folderViewGridPanelPrefix = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase());
-                File folderGridPanel = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "view");
-              
+                File folderGridPanelSubmodulo = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "view");
+                File folderGridPanel = new File(folderDirectorioDestino.getAbsolutePath() + File.separator + "view" + File.separator + prefix.toLowerCase() + File.separator + "view" + File.separator + subModulo);
+                
                 if (!folderView.exists()) {
                     folderView.mkdir();
                 }
@@ -123,21 +135,25 @@ public class Generafile {
                     folderView.mkdir();
                 }
                 
+                if (!folderGridPanelSubmodulo.exists()) {
+                	folderGridPanelSubmodulo.mkdir();
+                }
+                
                 if (!folderGridPanel.exists()) {
                     folderGridPanel.mkdir();
                 }
                 
-                Generafile.createGridPanelFile(artifactoID, folderGridPanel.getAbsolutePath(), modulo, listColumnTypes, prefix.toLowerCase(), servicio);
+                Generafile.createGridPanelFile(artifactoID, folderGridPanel.getAbsolutePath(), modulo, listColumnTypes, prefix.toLowerCase(), servicio, subModulo);
             }
             
             System.out.println("OK!");
         }
     }
 
-    private static void createGridPanelFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
+    private static void createGridPanelFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix, String servicio, String subModulo) {
     	
-        String contentFileFormulario = ConstructFileJS.createFormulario(modulo, fileTocreate, list, prefix);
-        String contentFileGridPanel = ConstructFileJS.createGridPanel(modulo, fileTocreate, list, prefix);
+        String contentFileFormulario = ConstructFileJS.createFormulario(modulo, fileTocreate, list, prefix, subModulo);
+        String contentFileGridPanel = ConstructFileJS.createGridPanel(modulo, fileTocreate, list, prefix, subModulo);
        
         
         //String contentFileWidget = ConstructFileJS.createWidget(modulo, fileTocreate, list, prefix);
@@ -267,10 +283,10 @@ public class Generafile {
         }
     }
 
-    private static void createViewModelFile(String modulo, String destino, String fileTocreate, String prefix) {
+    private static void createViewModelFile(String modulo, String destino, String fileTocreate, String prefix, String subModulo) {
     	
-        String contentFile = ConstructFileJS.createViewModel(modulo, fileTocreate, prefix);
-        String contentWindowViewModel = ConstructFileJS.createWindowViewModel(modulo, fileTocreate, prefix);
+        String contentFile = ConstructFileJS.createViewModel(modulo, fileTocreate, prefix, subModulo);
+        String contentWindowViewModel = ConstructFileJS.createWindowViewModel(modulo, fileTocreate, prefix, subModulo);
         Writer fichero = null;
         Writer ficheroWindowViewModel = null;
         
@@ -302,10 +318,10 @@ public class Generafile {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private static void createViewControllerFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix, String servicio) {
+    private static void createViewControllerFile(String modulo, String destino, String fileTocreate, List<ColumnType> list, String prefix, String servicio, String subModulo) {
     	
-        String contentFile = ConstructFileJS.createViewController(modulo, fileTocreate, list, prefix, servicio);
-        String contentFileFormViewController = ConstructFileJS.createFormViewController(modulo, fileTocreate, list, prefix, servicio);
+        String contentFile = ConstructFileJS.createViewController(modulo, fileTocreate, list, prefix, servicio, subModulo);
+        String contentFileFormViewController = ConstructFileJS.createFormViewController(modulo, fileTocreate, list, prefix, servicio, subModulo);
         Writer fichero = null;
         Writer ficheroFormViewController = null;
         
