@@ -499,10 +499,10 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         contenido.append("\n\t\t\t ui: 'footer',");
         contenido.append("\n\t\t\t fixed: true,");
         contenido.append("\n\t\t\t items: [");
-        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Cancelar', listeners: { click: 'onReset'  } },");
-        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Anular', listeners: { click: 'onDelete'  } },");
+        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Cancelar', iconCls: 'fa fa-trash-o', listeners: { click: 'onReset'  } },");
+        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Anular', iconCls: 'fa fa-minus-circle', listeners: { click: 'onDelete'  } },");
         contenido.append("\n\t\t\t\t '->',");
-        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Guardar', listeners: { click: 'onSave'  }}");
+        contenido.append("\n\t\t\t\t {xtype: 'button', text: 'Guardar', iconCls: 'fa fa-floppy-o', listeners: { click: 'onSave'  }}");
         contenido.append("\n\t\t\t ]");
         
         contenido.append("\n\t\t }] ");
