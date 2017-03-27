@@ -526,6 +526,7 @@ public static String createWindowViewModel(String modulo, String fileTocreate, S
         contenido.append("\n \t\t\t\t  listeners: { click: 'onSave'  }, align: 'right'");
         contenido.append("\n \t\t\t }");
         contenido.append("\n\t\t ] ");
+        
         */
         
         contenido.append("\n\n\t  }");
